@@ -1,0 +1,33 @@
+# File di sistema
+.DS_Store
+
+# Corpus grezzo e di lavoro: contiene campi di testo libero
+# (Problema_affrontato, Osservazioni, Workflow_dettagliato...) che in alcuni
+# record nominano persone reali in contesti sensibili. Non pubblicare finché
+# quei record non sono stati revisitati caso per caso.
+database_casi.csv
+database_casi.json
+database_ai_terzo_settore.xlsx
+corpus_freeze_391rec_2026-08-20.csv
+corpus_freeze_391rec_2026-08-20.json
+corpus_freeze_391rec_2026-08-20.xlsx
+corpus_working_389rec_2026-08-20.csv
+corpus_working_389rec_2026-08-20.json
+corpus_working_389rec_2026-08-20.xlsx
+corpus_audit_report.md
+multi_implementation_review.csv
+registro_esclusioni.csv
+registro_query_ricerca.csv
+protocollo_metodologico.docx
+strategia_di_ricerca.docx
+
+# Nodi e relazioni del knowledge_layer: portano con sé gli stessi campi di
+# testo libero del corpus (il nodo Implementazione replica Problema/
+# Osservazioni/Workflow_dettagliato). Resta pubblico solo lo schema
+# (graph_schema.md, import.cypher), non i dati.
+knowledge_layer/nodes/
+knowledge_layer/relationships/
+
+# Coda di revisione settimanale: candidati non ancora approvati, possono
+# contenere testo non ancora controllato per sensibilità.
+revisione_settimanale/

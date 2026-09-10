@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Osservatorio IA nel Terzo Settore</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0f1115; --card: #171a21; --card-border: #262b36;
+    --text: #e7e9ee; --muted: #9aa3b2; --accent: #5eead4; --accent2: #818cf8;
+    --accent3: #fb923c; --good: #34d399;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+  header {
+    padding: 56px 24px 40px; text-align: center;
+    background: radial-gradient(ellipse at top, rgba(94,234,212,0.08), transparent 60%);
+    border-bottom: 1px solid var(--card-border);
+  }
+  header h1 { font-size: 2.1rem; margin: 0 0 10px; letter-spacing: -0.02em; }
+  header p.subtitle { color: var(--muted); max-width: 640px; margin: 0 auto 28px; font-size: 1.02rem; }
+  .metabar {
+    display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; max-width: 900px; margin: 0 auto;
+  }
+  .metabar .stat {
+    background: var(--card); border: 1px solid var(--card-border); border-radius: 12px;
+    padding: 14px 20px; min-width: 110px;
+  }
+  .metabar .stat .n { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+  .metabar .stat .l { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+
+  main { max-width: 1160px; margin: 0 auto; padding: 40px 20px 20px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(430px, 1fr)); gap: 20px; }
+  .card {
+    background: var(--card); border: 1px solid var(--card-border); border-radius: 14px;
+    padding: 22px 24px 20px;
+  }
+  .card .qnum { font-size: 0.75rem; color: var(--accent2); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+  .card h2 { font-size: 1.08rem; margin: 4px 0 14px; font-weight: 600; }
+  .card .insight { font-size: 0.92rem; color: var(--muted); margin-top: 12px; border-top: 1px solid var(--card-border); padding-top: 12px; }
+  .card .insight strong { color: var(--text); }
+  .card .caveat { font-size: 0.78rem; color: var(--accent3); margin-top: 8px; }
+  canvas { max-height: 260px; }
+  ul.ranklist { list-style: none; margin: 0; padding: 0; }
+  ul.ranklist li {
+    display: flex; justify-content: space-between; gap: 10px; padding: 7px 0;
+    border-bottom: 1px dashed var(--card-border); font-size: 0.92rem;
+  }
+  ul.ranklist li:last-child { border-bottom: none; }
+  ul.ranklist li .name { color: var(--text); }
+  ul.ranklist li .val { color: var(--accent); font-weight: 600; white-space: nowrap; }
+  .combo-row { font-size: 0.85rem; padding: 6px 0; border-bottom: 1px dashed var(--card-border); }
+  .combo-row .tag { display: inline-block; background: #1f2430; border-radius: 6px; padding: 1px 7px; margin-right: 4px; font-size: 0.78rem; color: var(--muted); }
+  .combo-row .n { float: right; color: var(--accent); font-weight: 700; }
+
+  footer {
+    max-width: 900px; margin: 50px auto 60px; padding: 24px 24px 0; border-top: 1px solid var(--card-border);
+    color: var(--muted); font-size: 0.85rem;
+  }
+  footer h3 { color: var(--text); font-size: 0.95rem; margin-bottom: 8px; }
+  footer ul { margin: 6px 0 20px; padding-left: 20px; }
+  footer li { margin-bottom: 6px; }
+  .badge-full { grid-column: 1 / -1; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Osservatorio IA nel Terzo Settore</h1>
+  <p class="subtitle">389 casi documentati di adozione di intelligenza artificiale in organizzazioni non profit, ONG e realtà del terzo settore a livello globale — raccolti, verificati e strutturati con metodo di evidence mapping.</p>
+  <div class="metabar" id="metabar"></div>
+</header>
+
+<main>
+  <div class="grid" id="grid"></div>
+</main>
+
+<footer>
+  <h3>Come leggere questi dati</h3>
+  <ul>
+    <li>Ogni "caso" è un'implementazione IA documentata da almeno una fonte pubblica (case study ufficiale, comunicato, articolo verificabile) — non un censimento completo del settore, ma un campione costruito per rilevanza ed evidenza disponibile.</li>
+    <li>Alcune dimensioni hanno una quota di casi "non classificabili" dal testo delle fonti disponibili (varia dal 5% al 15% a seconda della dimensione) — non forzati in una categoria per non introdurre falsi pattern.</li>
+    <li>La dimensione "Finanziatori" copre solo i 6 programmi di grant ricorrenti individuati con evidenza chiara nel corpus: il panorama dei finanziatori one-off non è sistematicamente documentato nelle fonti raccolte.</li>
+    <li>N_dipendenti/Fatturato organizzativo sono disponibili solo per una minoranza di casi (rispettivamente 5% e 1%) — non usati per confronti quantitativi sistematici.</li>
+    <li>Il confronto cooperative/fondazioni ha una base campionaria ridotta per le cooperative (3 organizzazioni) — lettura indicativa, non statisticamente robusta.</li>
+  </ul>
+  <p>Dati aggiornati al <span id="datacostruzione"></span>. Metodologia completa e corpus disponibili su richiesta.</p>
+</footer>
+
+<script id="obs-data" type="application/json">
+{
+ "tecniche_diffuse": [
+  {
+   "nome": "AI generativa / LLM",
+   "n": 124,
+   "pct": 31.9
+  },
+  {
+   "nome": "Chatbot conversazionale",
+   "n": 96,
+   "pct": 24.7
+  },
+  {
+   "nome": "Machine learning (generico)",
+   "n": 76,
+   "pct": 19.5
+  },
+  {
+   "nome": "IA generica / non specificata",
+   "n": 65,
+   "pct": 16.7
+  },
+  {
+   "nome": "Machine learning predittivo",
+   "n": 60,
+   "pct": 15.4
+  },
+  {
+   "nome": "Computer vision / analisi immagini",
+   "n": 51,
+   "pct": 13.1
+  },
+  {
+   "nome": "NLP (testo)",
+   "n": 39,
+   "pct": 10.0
+  },
+  {
+   "nome": "Sistema di raccomandazione / matching",
+   "n": 29,
+   "pct": 7.5
+  },
+  {
+   "nome": "Automazione/RPA/orchestrazione",
+   "n": 20,
+   "pct": 5.1
+  },
+  {
+   "nome": "Riconoscimento vocale / audio",
+   "n": 18,
+   "pct": 4.6
+  }
+ ],
+ "tecniche_beneficiari_finali": [
+  {
+   "nome": "AI generativa / LLM",
+   "n": 100,
+   "pct_su_missione": 30.7
+  },
+  {
+   "nome": "Chatbot conversazionale",
+   "n": 81,
+   "pct_su_missione": 24.8
+  },
+  {
+   "nome": "Machine learning (generico)",
+   "n": 62,
+   "pct_su_missione": 19.0
+  },
+  {
+   "nome": "IA generica / non specificata",
+   "n": 59,
+   "pct_su_missione": 18.1
+  },
+  {
+   "nome": "Machine learning predittivo",
+   "n": 53,
+   "pct_su_missione": 16.3
+  },
+  {
+   "nome": "Computer vision / analisi immagini",
+   "n": 45,
+   "pct_su_missione": 13.8
+  },
+  {
+   "nome": "NLP (testo)",
+   "n": 32,
+   "pct_su_missione": 9.8
+  },
+  {
+   "nome": "Sistema di raccomandazione / matching",
+   "n": 22,
+   "pct_su_missione": 6.7
+  }
+ ],
+ "n_implementazioni_beneficiario_finale": 326,
+ "cooperative_vs_fondazioni": {
+  "cooperative": {
+   "n_org": 3,
+   "n_impl": 3,
+   "top_tecniche": [
+    [
+     "AI generativa / LLM",
+     1
+    ],
+    [
+     "Machine learning predittivo",
+     1
+    ],
+    [
+     "Chatbot conversazionale",
+     1
+    ],
+    [
+     "IA generica / non specificata",
+     1
+    ]
+   ]
+  },
+  "fondazioni": {
+   "n_org": 22,
+   "n_impl": 23,
+   "top_tecniche": [
+    [
+     "Chatbot conversazionale",
+     9
+    ],
+    [
+     "Computer vision / analisi immagini",
+     7
+    ],
+    [
+     "AI generativa / LLM",
+     5
+    ],
+    [
+     "Machine learning (generico)",
+     5
+    ],
+    [
+     "Sistema di raccomandazione / matching",
+     4
+    ]
+   ]
+  }
+ },
+ "organizzazioni_multi_implementazione": [
+  {
+   "nome": "GiveDirectly",
+   "n": 3
+  },
+  {
+   "nome": "International Rescue Committee (IRC)",
+   "n": 3
+  },
+  {
+   "nome": "Crisis Text Line",
+   "n": 3
+  },
+  {
+   "nome": "Greenpeace Australia Pacific",
+   "n": 2
+  },
+  {
+   "nome": "Mercy Corps",
+   "n": 2
+  },
+  {
+   "nome": "Croce Rossa Americana (American Red Cross)",
+   "n": 2
+  },
+  {
+   "nome": "Legal Aid Society of San Bernardino (LASSB)",
+   "n": 2
+  },
+  {
+   "nome": "ARMMAN",
+   "n": 2
+  },
+  {
+   "nome": "American Cancer Society (ACS)",
+   "n": 2
+  },
+  {
+   "nome": "The Trevor Project, in collaborazione con Google.org (Fellowship)",
+   "n": 2
+  },
+  {
+   "nome": "EverythingALS (Peter Cohen Foundation)",
+   "n": 2
+  },
+  {
+   "nome": "RAINN (Rape, Abuse & Incest National Network)",
+   "n": 2
+  }
+ ],
+ "n_organizzazioni_multi_implementazione": 15,
+ "fornitori_multi_settore": [
+  {
+   "nome": "Amazon/AWS (Bedrock/Personalize)",
+   "n_settori": 17
+  },
+  {
+   "nome": "Microsoft (Copilot/Azure)",
+   "n_settori": 14
+  },
+  {
+   "nome": "Google (Gemini/DeepMind/Vertex)",
+   "n_settori": 12
+  },
+  {
+   "nome": "OpenAI (GPT/ChatGPT)",
+   "n_settori": 12
+  },
+  {
+   "nome": "Salesforce (Agentforce/Einstein)",
+   "n_settori": 10
+  },
+  {
+   "nome": "IBM (Watson/Garage)",
+   "n_settori": 8
+  },
+  {
+   "nome": "Anthropic (Claude)",
+   "n_settori": 7
+  }
+ ],
+ "paesi_varieta_tecniche": [
+  {
+   "nome": "Stati Uniti",
+   "n_tecniche": 15
+  },
+  {
+   "nome": "India",
+   "n_tecniche": 12
+  },
+  {
+   "nome": "Regno Unito",
+   "n_tecniche": 11
+  },
+  {
+   "nome": "Kenya",
+   "n_tecniche": 10
+  },
+  {
+   "nome": "Messico",
+   "n_tecniche": 9
+  },
+  {
+   "nome": "Nigeria",
+   "n_tecniche": 8
+  },
+  {
+   "nome": "Perù",
+   "n_tecniche": 8
+  },
+  {
+   "nome": "Colombia",
+   "n_tecniche": 8
+  },
+  {
+   "nome": "Malawi",
+   "n_tecniche": 8
+  },
+  {
+   "nome": "Canada",
+   "n_tecniche": 8
+  }
+ ],
+ "combinazioni_frequenti": [
+  {
+   "categoria": "ONG / organizzazione non governativa",
+   "funzione": "Monitoraggio e valutazione (M&E)",
+   "tecnica": "Computer vision / analisi immagini",
+   "n": 21
+  },
+  {
+   "categoria": "ONG / organizzazione non governativa",
+   "funzione": "Assistenza diretta/supporto psicologico/helpline",
+   "tecnica": "Chatbot conversazionale",
+   "n": 18
+  },
+  {
+   "categoria": "ONG / organizzazione non governativa",
+   "funzione": "Analisi dati/supporto decisionale",
+   "tecnica": "Machine learning predittivo",
+   "n": 17
+  },
+  {
+   "categoria": "ONG / organizzazione non governativa",
+   "funzione": "Monitoraggio e valutazione (M&E)",
+   "tecnica": "Machine learning predittivo",
+   "n": 17
+  },
+  {
+   "categoria": "ONG / organizzazione non governativa",
+   "funzione": "Formazione/capacity building",
+   "tecnica": "AI generativa / LLM",
+   "n": 13
+  },
+  {
+   "categoria": "ONG / organizzazione non governativa",
+   "funzione": "Formazione/capacity building",
+   "tecnica": "Chatbot conversazionale",
+   "n": 12
+  },
+  {
+   "categoria": "ONG / organizzazione non governativa",
+   "funzione": "Monitoraggio e valutazione (M&E)",
+   "tecnica": "Machine learning (generico)",
+   "n": 12
+  },
+  {
+   "categoria": "ONG / organizzazione non governativa",
+   "funzione": "Analisi dati/supporto decisionale",
+   "tecnica": "Machine learning (generico)",
+   "n": 9
+  },
+  {
+   "categoria": "ONG / organizzazione non governativa",
+   "funzione": "Assistenza diretta/supporto psicologico/helpline",
+   "tecnica": "AI generativa / LLM",
+   "n": 9
+  },
+  {
+   "categoria": "ONG / organizzazione non governativa",
+   "funzione": "Matching/abbinamento beneficiari-risorse",
+   "tecnica": "Sistema di raccomandazione / matching",
+   "n": 9
+  }
+ ],
+ "programmi_ricorrenti": [
+  {
+   "nome": "AWS Imagine Grant / AWS Nonprofit Imagine Grant",
+   "n": 79
+  },
+  {
+   "nome": "Patrick J. McGovern Foundation - grant",
+   "n": 49
+  },
+  {
+   "nome": "Google.org",
+   "n": 19
+  },
+  {
+   "nome": "Salesforce Agentforce - Agents for Impact",
+   "n": 13
+  },
+  {
+   "nome": "IBM Sustainability Accelerator",
+   "n": 8
+  },
+  {
+   "nome": "data.org Activate AI Challenge",
+   "n": 3
+  }
+ ],
+ "supervisione_umana": [
+  {
+   "nome": "Esecuzione/relazione diretta mantenuta da umano",
+   "n": 237,
+   "pct": 60.9
+  },
+  {
+   "nome": "Validazione/correzione umana pre-uso",
+   "n": 120,
+   "pct": 30.8
+  },
+  {
+   "nome": "Decisione finale umana",
+   "n": 103,
+   "pct": 26.5
+  },
+  {
+   "nome": "Supervisione per eccezioni/escalation",
+   "n": 92,
+   "pct": 23.7
+  },
+  {
+   "nome": "Interpretazione/analisi umana dei risultati",
+   "n": 61,
+   "pct": 15.7
+  }
+ ],
+ "tipo_beneficiario": [
+  {
+   "nome": "Beneficiario finale della missione",
+   "n": 326,
+   "pct": 83.8
+  },
+  {
+   "nome": "Organizzazione/interno",
+   "n": 200,
+   "pct": 51.4
+  },
+  {
+   "nome": "Organizzazione/ente terzo/PA",
+   "n": 46,
+   "pct": 11.8
+  }
+ ],
+ "collaborazioni": {
+  "n_implementazioni_con_collaboratore": 35,
+  "pct": 9.0,
+  "top_collaboratori": [
+   {
+    "nome": "IBM",
+    "n": 4
+   },
+   {
+    "nome": "Cisco",
+    "n": 2
+   },
+   {
+    "nome": "Microsoft AI for Good Lab",
+    "n": 2
+   },
+   {
+    "nome": "EPFL",
+    "n": 1
+   },
+   {
+    "nome": "ETHZ",
+    "n": 1
+   },
+   {
+    "nome": "Uber",
+    "n": 1
+   },
+   {
+    "nome": "Wieden+Kennedy",
+    "n": 1
+   },
+   {
+    "nome": "SHOUT-IT-NOW",
+    "n": 1
+   },
+   {
+    "nome": "Humanitech",
+    "n": 1
+   },
+   {
+    "nome": "One Acre Fund",
+    "n": 1
+   }
+  ]
+ },
+ "dimensione_organizzativa": [
+  {
+   "nome": "Grande",
+   "n": 140,
+   "pct": 37.7
+  },
+  {
+   "nome": "Media",
+   "n": 118,
+   "pct": 31.8
+  },
+  {
+   "nome": "Piccola-Media",
+   "n": 39,
+   "pct": 10.5
+  },
+  {
+   "nome": "Piccola",
+   "n": 33,
+   "pct": 8.9
+  },
+  {
+   "nome": "Media-Grande",
+   "n": 28,
+   "pct": 7.5
+  },
+  {
+   "nome": "Molto Grande",
+   "n": 9,
+   "pct": 2.4
+  },
+  {
+   "nome": "Non disponibile",
+   "n": 3,
+   "pct": 0.8
+  },
+  {
+   "nome": "Molto Piccola",
+   "n": 1,
+   "pct": 0.3
+  }
+ ],
+ "settori_missione_diffusi": [
+  {
+   "nome": "Salute/sanità",
+   "n": 107,
+   "pct": 27.5
+  },
+  {
+   "nome": "Ambiente/conservazione natura",
+   "n": 69,
+   "pct": 17.7
+  },
+  {
+   "nome": "Aiuti umanitari/rifugiati/disastri",
+   "n": 53,
+   "pct": 13.6
+  },
+  {
+   "nome": "Istruzione/formazione",
+   "n": 49,
+   "pct": 12.6
+  },
+  {
+   "nome": "Sviluppo economico/finanza inclusiva/lavoro",
+   "n": 46,
+   "pct": 11.8
+  },
+  {
+   "nome": "Inclusione sociale/povertà/assistenza sociale",
+   "n": 36,
+   "pct": 9.3
+  },
+  {
+   "nome": "Diritti umani/giustizia/legale",
+   "n": 35,
+   "pct": 9.0
+  },
+  {
+   "nome": "Violenza di genere/protezione vulnerabili",
+   "n": 31,
+   "pct": 8.0
+  },
+  {
+   "nome": "Disabilità/accessibilità",
+   "n": 20,
+   "pct": 5.1
+  },
+  {
+   "nome": "Salute mentale/supporto psicologico",
+   "n": 18,
+   "pct": 4.6
+  }
+ ],
+ "trend_anno": [
+  {
+   "anno": "2016",
+   "n": 1
+  },
+  {
+   "anno": "2018",
+   "n": 1
+  },
+  {
+   "anno": "2019",
+   "n": 3
+  },
+  {
+   "anno": "2020",
+   "n": 5
+  },
+  {
+   "anno": "2021",
+   "n": 2
+  },
+  {
+   "anno": "2022",
+   "n": 5
+  },
+  {
+   "anno": "2023",
+   "n": 17
+  },
+  {
+   "anno": "2024",
+   "n": 44
+  },
+  {
+   "anno": "2025",
+   "n": 36
+  },
+  {
+   "anno": "2026",
+   "n": 6
+  }
+ ],
+ "meta": {
+  "n_implementazioni": 389,
+  "n_organizzazioni": 371,
+  "n_paesi": 79,
+  "n_tecniche": 15,
+  "n_fornitori": 10,
+  "n_fonti": 275,
+  "data_costruzione": "2026-08-24"
+ }
+}
+</script>
+
+<script>
+const DATA = JSON.parse(document.getElementById('obs-data').textContent);
+const COLORS = ['#5eead4','#818cf8','#fb923c','#f472b6','#a3e635','#38bdf8','#facc15','#fb7185','#34d399','#c084fc'];
+
+function el(tag, cls, html) { const e = document.createElement(tag); if (cls) e.className = cls; if (html !== undefined) e.innerHTML = html; return e; }
+
+// meta bar
+const metabar = document.getElementById('metabar');
+const metaItems = [
+  [DATA.meta.n_implementazioni, 'Casi documentati'],
+  [DATA.meta.n_organizzazioni, 'Organizzazioni'],
+  [DATA.meta.n_paesi, 'Paesi'],
+  [DATA.meta.n_tecniche, 'Tecniche IA'],
+  [DATA.meta.n_fonti, 'Fonti primarie'],
+];
+metaItems.forEach(([n,l]) => {
+  const s = el('div','stat', `<div class="n">${n}</div><div class="l">${l}</div>`);
+  metabar.appendChild(s);
+});
+document.getElementById('datacostruzione').textContent = DATA.meta.data_costruzione;
+
+const grid = document.getElementById('grid');
+let qn = 1;
+
+function card(title, bodyBuilder, insightHtml, caveat, full) {
+  const c = el('div','card' + (full ? ' badge-full' : ''));
+  c.appendChild(el('div','qnum', 'Domanda ' + (qn++)));
+  c.appendChild(el('h2', null, title));
+  bodyBuilder(c);
+  if (insightHtml) c.appendChild(el('div','insight', insightHtml));
+  if (caveat) c.appendChild(el('div','caveat', '⚠ ' + caveat));
+  grid.appendChild(c);
+}
+
+function barChart(container, labels, values, colorIdx) {
+  const canvas = document.createElement('canvas');
+  container.appendChild(canvas);
+  new Chart(canvas, {
+    type: 'bar',
+    data: { labels, datasets: [{ data: values, backgroundColor: labels.map((_,i)=>COLORS[(colorIdx+i)%COLORS.length]), borderRadius: 4 }] },
+    options: {
+      indexAxis: 'y',
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: '#262b36' }, ticks: { color: '#9aa3b2' } },
+        y: { grid: { display: false }, ticks: { color: '#e7e9ee', font: { size: 11 } } }
+      }
+    }
+  });
+}
+
+function rankList(container, items, nameKey, valKey, suffix) {
+  const ul = el('ul','ranklist');
+  items.forEach(it => {
+    const li = el('li', null, `<span class="name">${it[nameKey]}</span><span class="val">${it[valKey]}${suffix||''}</span>`);
+    ul.appendChild(li);
+  });
+  container.appendChild(ul);
+}
+
+// 1. Tecniche piu' diffuse
+card('Quali tecniche IA sono più diffuse nel terzo settore?', c => {
+  barChart(c, DATA.tecniche_diffuse.map(d=>d.nome), DATA.tecniche_diffuse.map(d=>d.n), 0);
+}, `L'<strong>IA generativa/LLM</strong> guida con il ${DATA.tecniche_diffuse[0].pct}% dei casi, seguita da <strong>chatbot conversazionali</strong> (${DATA.tecniche_diffuse[1].pct}%). Il ${DATA.tecniche_diffuse[3].pct}% dei casi descrive un uso IA generico senza specificare la tecnica.`);
+
+// 2. Tecniche per beneficiari finali
+card('Quali tecniche sono più associate a servizi rivolti direttamente ai beneficiari?', c => {
+  barChart(c, DATA.tecniche_beneficiari_finali.map(d=>d.nome), DATA.tecniche_beneficiari_finali.map(d=>d.n), 1);
+}, `Su ${DATA.n_implementazioni_beneficiario_finale} casi il cui beneficio va a persone/comunità/cause esterne (non all'organizzazione stessa), l'IA generativa resta la tecnica più usata (${DATA.tecniche_beneficiari_finali[0].pct_su_missione}%).`);
+
+// 3. Cooperative vs Fondazioni
+card("Le cooperative differiscono dalle fondazioni nell'uso dell'IA?", c => {
+  const cv = DATA.cooperative_vs_fondazioni;
+  const wrap = el('div');
+  wrap.appendChild(el('p', null, `<strong>Cooperative sociali</strong>: ${cv.cooperative.n_org} organizzazioni, ${cv.cooperative.n_impl} casi.`));
+  rankList(wrap, cv.cooperative.top_tecniche.map(([n,v])=>({n,v})), 'n', 'v');
+  wrap.appendChild(el('p', null, `<strong>Fondazioni</strong>: ${cv.fondazioni.n_org} organizzazioni, ${cv.fondazioni.n_impl} casi.`));
+  rankList(wrap, cv.fondazioni.top_tecniche.map(([n,v])=>({n,v})), 'n', 'v');
+  c.appendChild(wrap);
+}, `Le fondazioni nel corpus usano più spesso <strong>chatbot</strong> e <strong>computer vision</strong>; le cooperative (campione minimo) mostrano tecniche più eterogenee.`, 'Campione cooperative molto ridotto (3 organizzazioni) — lettura indicativa, non statisticamente robusta.');
+
+// 4. Organizzazioni multi-implementazione
+card('Quali organizzazioni hanno più implementazioni IA?', c => {
+  rankList(c, DATA.organizzazioni_multi_implementazione, 'nome', 'n', ' casi');
+}, `${DATA.n_organizzazioni_multi_implementazione} organizzazioni su ${DATA.meta.n_organizzazioni} (${(100*DATA.n_organizzazioni_multi_implementazione/DATA.meta.n_organizzazioni).toFixed(1)}%) hanno più di un'implementazione documentata — segnale di adozione IA come traiettoria organizzativa, non solo pilota isolato.`);
+
+// 5. Fornitori multi-settore
+card('Quali fornitori tecnologici ricorrono in più settori missione?', c => {
+  barChart(c, DATA.fornitori_multi_settore.map(d=>d.nome), DATA.fornitori_multi_settore.map(d=>d.n_settori), 2);
+}, `<strong>AWS</strong> e <strong>Microsoft</strong> compaiono nel maggior numero di settori missione distinti — probabile effetto dei programmi di grant tecnologico (AWS Imagine Grant) più che di preferenza tecnica.`);
+
+// 6. Paesi con maggiore varieta'
+card('Quali Paesi mostrano la maggiore varietà di utilizzi IA?', c => {
+  barChart(c, DATA.paesi_varieta_tecniche.map(d=>d.nome), DATA.paesi_varieta_tecniche.map(d=>d.n_tecniche), 3);
+}, `Gli <strong>Stati Uniti</strong> mostrano la maggiore diversità di tecniche IA impiegate, riflettendo sia la numerosità di casi USA nel corpus sia la maturità dell'ecosistema.`, 'La varietà per Paese è in parte funzione del numero di casi disponibili per quel Paese, non solo della maturità del mercato.');
+
+// 7. Combinazioni frequenti
+card('Quali combinazioni Categoria + Funzione + Tecnica sono più comuni?', c => {
+  const wrap = el('div');
+  DATA.combinazioni_frequenti.slice(0,8).forEach(cm => {
+    wrap.appendChild(el('div','combo-row', `<span class="tag">${cm.categoria}</span><span class="tag">${cm.funzione}</span><span class="tag">${cm.tecnica}</span><span class="n">${cm.n}</span>`));
+  });
+  c.appendChild(wrap);
+}, `Il pattern più ricorrente è <strong>ONG + Monitoraggio e valutazione + Computer vision</strong> — riflette il peso dei casi ambientali/umanitari che usano analisi di immagini satellitari o sul campo.`);
+
+// 8. Programmi ricorrenti
+card('Quali programmi di finanziamento ricorrono più spesso?', c => {
+  barChart(c, DATA.programmi_ricorrenti.map(d=>d.nome), DATA.programmi_ricorrenti.map(d=>d.n), 4);
+}, `<strong>AWS Imagine Grant</strong> e la <strong>Patrick J. McGovern Foundation</strong> insieme coprono la maggioranza dei casi con un programma di finanziamento riconoscibile nel corpus.`, 'Copre solo i 6 programmi ricorrenti con evidenza chiara — il panorama completo dei finanziatori one-off non è sistematicamente documentato nelle fonti.');
+
+// 9. Supervisione umana
+card('Che ruolo ha la supervisione umana nei workflow IA documentati?', c => {
+  barChart(c, DATA.supervisione_umana.map(d=>d.nome), DATA.supervisione_umana.map(d=>d.n), 5);
+}, `Nel ${DATA.supervisione_umana[0].pct}% dei casi un umano mantiene l'esecuzione o la relazione diretta; nel ${DATA.supervisione_umana.find(d=>d.nome.includes('Validazione')).pct}% l'output IA viene validato o corretto prima dell'uso. Nessun caso descrive automazione piena senza alcun ruolo umano esplicito.`);
+
+// 10. Tipo beneficiario
+card('Chi beneficia realmente delle implementazioni IA?', c => {
+  barChart(c, DATA.tipo_beneficiario.map(d=>d.nome), DATA.tipo_beneficiario.map(d=>d.n), 6);
+}, `L'${DATA.tipo_beneficiario[0].pct}% dei casi riporta un beneficio a persone/comunità/cause esterne alla missione; il ${DATA.tipo_beneficiario[1].pct}% riporta anche (o solo) un beneficio interno all'organizzazione stessa (tempo, capacità, costi) — le due cose non si escludono.`);
+
+// 11. Collaborazioni
+card('Quanto sono comuni le collaborazioni multi-stakeholder?', c => {
+  const wrap = el('div');
+  wrap.appendChild(el('p', null, `${DATA.collaborazioni.n_implementazioni_con_collaboratore} casi su ${DATA.meta.n_implementazioni} (${DATA.collaborazioni.pct}%) coinvolgono esplicitamente un partner terzo oltre all'organizzazione principale.`));
+  rankList(wrap, DATA.collaborazioni.top_collaboratori, 'nome', 'n', ' casi');
+  c.appendChild(wrap);
+}, `<strong>IBM</strong> è il collaboratore tecnologico più ricorrente al di fuori dei propri programmi di grant strutturati.`);
+
+// 12. Dimensione organizzativa
+card('Che dimensione hanno le organizzazioni che adottano IA?', c => {
+  barChart(c, DATA.dimensione_organizzativa.map(d=>d.nome), DATA.dimensione_organizzativa.map(d=>d.n), 7);
+}, `Le organizzazioni <strong>Grandi</strong> e <strong>Medie</strong> insieme coprono circa il ${(DATA.dimensione_organizzativa[0].pct+DATA.dimensione_organizzativa[1].pct).toFixed(0)}% dei casi — ma questo può riflettere un bias delle fonti pubbliche (le organizzazioni più grandi pubblicano più case study) più che un reale minor tasso di adozione tra le realtà piccole.`);
+
+// 13. Settori missione
+card("Quali settori missione sono più coperti dall'adozione IA?", c => {
+  barChart(c, DATA.settori_missione_diffusi.map(d=>d.nome), DATA.settori_missione_diffusi.map(d=>d.n), 8);
+}, `<strong>Salute/sanità</strong> è il settore missione più rappresentato (${DATA.settori_missione_diffusi[0].pct}%), seguito da <strong>ambiente/conservazione</strong> — quest'ultimo trainato in parte da programmi di grant dedicati (IBM Sustainability Accelerator).`);
+
+// 14. Trend temporale
+card("Come è cresciuta l'adozione IA nel tempo?", c => {
+  barChart(c, DATA.trend_anno.map(d=>d.anno), DATA.trend_anno.map(d=>d.n), 9);
+}, `Crescita marcata dal 2023 in poi, con il picco nel 2024 — coerente con la diffusione dell'IA generativa dopo il 2022, ma riflette anche quali casi sono più facilmente documentabili/recenti nelle fonti pubbliche disponibili.`, "Il trend riflette anche la disponibilità di fonti pubbliche più recenti, non solo l'adozione reale — i case study aziendali sui grant IA sono un fenomeno esso stesso recente.");
+
+</script>
+</body>
+</html>

@@ -1,0 +1,593 @@
+{
+ "tecniche_diffuse": [
+  {
+   "nome": "AI generativa / LLM",
+   "n": 124,
+   "pct": 31.9
+  },
+  {
+   "nome": "Chatbot conversazionale",
+   "n": 96,
+   "pct": 24.7
+  },
+  {
+   "nome": "Machine learning (generico)",
+   "n": 76,
+   "pct": 19.5
+  },
+  {
+   "nome": "IA generica / non specificata",
+   "n": 65,
+   "pct": 16.7
+  },
+  {
+   "nome": "Machine learning predittivo",
+   "n": 60,
+   "pct": 15.4
+  },
+  {
+   "nome": "Computer vision / analisi immagini",
+   "n": 51,
+   "pct": 13.1
+  },
+  {
+   "nome": "NLP (testo)",
+   "n": 39,
+   "pct": 10.0
+  },
+  {
+   "nome": "Sistema di raccomandazione / matching",
+   "n": 29,
+   "pct": 7.5
+  },
+  {
+   "nome": "Automazione/RPA/orchestrazione",
+   "n": 20,
+   "pct": 5.1
+  },
+  {
+   "nome": "Riconoscimento vocale / audio",
+   "n": 18,
+   "pct": 4.6
+  }
+ ],
+ "tecniche_beneficiari_finali": [
+  {
+   "nome": "AI generativa / LLM",
+   "n": 100,
+   "pct_su_missione": 30.7
+  },
+  {
+   "nome": "Chatbot conversazionale",
+   "n": 81,
+   "pct_su_missione": 24.8
+  },
+  {
+   "nome": "Machine learning (generico)",
+   "n": 62,
+   "pct_su_missione": 19.0
+  },
+  {
+   "nome": "IA generica / non specificata",
+   "n": 59,
+   "pct_su_missione": 18.1
+  },
+  {
+   "nome": "Machine learning predittivo",
+   "n": 53,
+   "pct_su_missione": 16.3
+  },
+  {
+   "nome": "Computer vision / analisi immagini",
+   "n": 45,
+   "pct_su_missione": 13.8
+  },
+  {
+   "nome": "NLP (testo)",
+   "n": 32,
+   "pct_su_missione": 9.8
+  },
+  {
+   "nome": "Sistema di raccomandazione / matching",
+   "n": 22,
+   "pct_su_missione": 6.7
+  }
+ ],
+ "n_implementazioni_beneficiario_finale": 326,
+ "cooperative_vs_fondazioni": {
+  "cooperative": {
+   "n_org": 3,
+   "n_impl": 3,
+   "top_tecniche": [
+    [
+     "AI generativa / LLM",
+     1
+    ],
+    [
+     "Machine learning predittivo",
+     1
+    ],
+    [
+     "Chatbot conversazionale",
+     1
+    ],
+    [
+     "IA generica / non specificata",
+     1
+    ]
+   ]
+  },
+  "fondazioni": {
+   "n_org": 22,
+   "n_impl": 23,
+   "top_tecniche": [
+    [
+     "Chatbot conversazionale",
+     9
+    ],
+    [
+     "Computer vision / analisi immagini",
+     7
+    ],
+    [
+     "AI generativa / LLM",
+     5
+    ],
+    [
+     "Machine learning (generico)",
+     5
+    ],
+    [
+     "Sistema di raccomandazione / matching",
+     4
+    ]
+   ]
+  }
+ },
+ "organizzazioni_multi_implementazione": [
+  {
+   "nome": "GiveDirectly",
+   "n": 3
+  },
+  {
+   "nome": "International Rescue Committee (IRC)",
+   "n": 3
+  },
+  {
+   "nome": "Crisis Text Line",
+   "n": 3
+  },
+  {
+   "nome": "Greenpeace Australia Pacific",
+   "n": 2
+  },
+  {
+   "nome": "Mercy Corps",
+   "n": 2
+  },
+  {
+   "nome": "Croce Rossa Americana (American Red Cross)",
+   "n": 2
+  },
+  {
+   "nome": "Legal Aid Society of San Bernardino (LASSB)",
+   "n": 2
+  },
+  {
+   "nome": "ARMMAN",
+   "n": 2
+  },
+  {
+   "nome": "American Cancer Society (ACS)",
+   "n": 2
+  },
+  {
+   "nome": "The Trevor Project, in collaborazione con Google.org (Fellowship)",
+   "n": 2
+  },
+  {
+   "nome": "EverythingALS (Peter Cohen Foundation)",
+   "n": 2
+  },
+  {
+   "nome": "RAINN (Rape, Abuse & Incest National Network)",
+   "n": 2
+  }
+ ],
+ "n_organizzazioni_multi_implementazione": 15,
+ "fornitori_multi_settore": [
+  {
+   "nome": "Amazon/AWS (Bedrock/Personalize)",
+   "n_settori": 17
+  },
+  {
+   "nome": "Microsoft (Copilot/Azure)",
+   "n_settori": 14
+  },
+  {
+   "nome": "Google (Gemini/DeepMind/Vertex)",
+   "n_settori": 12
+  },
+  {
+   "nome": "OpenAI (GPT/ChatGPT)",
+   "n_settori": 12
+  },
+  {
+   "nome": "Salesforce (Agentforce/Einstein)",
+   "n_settori": 10
+  },
+  {
+   "nome": "IBM (Watson/Garage)",
+   "n_settori": 8
+  },
+  {
+   "nome": "Anthropic (Claude)",
+   "n_settori": 7
+  }
+ ],
+ "paesi_varieta_tecniche": [
+  {
+   "nome": "Stati Uniti",
+   "n_tecniche": 15
+  },
+  {
+   "nome": "India",
+   "n_tecniche": 12
+  },
+  {
+   "nome": "Regno Unito",
+   "n_tecniche": 11
+  },
+  {
+   "nome": "Kenya",
+   "n_tecniche": 10
+  },
+  {
+   "nome": "Messico",
+   "n_tecniche": 9
+  },
+  {
+   "nome": "Nigeria",
+   "n_tecniche": 8
+  },
+  {
+   "nome": "Perù",
+   "n_tecniche": 8
+  },
+  {
+   "nome": "Colombia",
+   "n_tecniche": 8
+  },
+  {
+   "nome": "Malawi",
+   "n_tecniche": 8
+  },
+  {
+   "nome": "Canada",
+   "n_tecniche": 8
+  }
+ ],
+ "combinazioni_frequenti": [
+  {
+   "categoria": "ONG / organizzazione non governativa",
+   "funzione": "Monitoraggio e valutazione (M&E)",
+   "tecnica": "Computer vision / analisi immagini",
+   "n": 21
+  },
+  {
+   "categoria": "ONG / organizzazione non governativa",
+   "funzione": "Assistenza diretta/supporto psicologico/helpline",
+   "tecnica": "Chatbot conversazionale",
+   "n": 18
+  },
+  {
+   "categoria": "ONG / organizzazione non governativa",
+   "funzione": "Analisi dati/supporto decisionale",
+   "tecnica": "Machine learning predittivo",
+   "n": 17
+  },
+  {
+   "categoria": "ONG / organizzazione non governativa",
+   "funzione": "Monitoraggio e valutazione (M&E)",
+   "tecnica": "Machine learning predittivo",
+   "n": 17
+  },
+  {
+   "categoria": "ONG / organizzazione non governativa",
+   "funzione": "Formazione/capacity building",
+   "tecnica": "AI generativa / LLM",
+   "n": 13
+  },
+  {
+   "categoria": "ONG / organizzazione non governativa",
+   "funzione": "Formazione/capacity building",
+   "tecnica": "Chatbot conversazionale",
+   "n": 12
+  },
+  {
+   "categoria": "ONG / organizzazione non governativa",
+   "funzione": "Monitoraggio e valutazione (M&E)",
+   "tecnica": "Machine learning (generico)",
+   "n": 12
+  },
+  {
+   "categoria": "ONG / organizzazione non governativa",
+   "funzione": "Analisi dati/supporto decisionale",
+   "tecnica": "Machine learning (generico)",
+   "n": 9
+  },
+  {
+   "categoria": "ONG / organizzazione non governativa",
+   "funzione": "Assistenza diretta/supporto psicologico/helpline",
+   "tecnica": "AI generativa / LLM",
+   "n": 9
+  },
+  {
+   "categoria": "ONG / organizzazione non governativa",
+   "funzione": "Matching/abbinamento beneficiari-risorse",
+   "tecnica": "Sistema di raccomandazione / matching",
+   "n": 9
+  }
+ ],
+ "programmi_ricorrenti": [
+  {
+   "nome": "AWS Imagine Grant / AWS Nonprofit Imagine Grant",
+   "n": 79
+  },
+  {
+   "nome": "Patrick J. McGovern Foundation - grant",
+   "n": 49
+  },
+  {
+   "nome": "Google.org",
+   "n": 19
+  },
+  {
+   "nome": "Salesforce Agentforce - Agents for Impact",
+   "n": 13
+  },
+  {
+   "nome": "IBM Sustainability Accelerator",
+   "n": 8
+  },
+  {
+   "nome": "data.org Activate AI Challenge",
+   "n": 3
+  }
+ ],
+ "supervisione_umana": [
+  {
+   "nome": "Esecuzione/relazione diretta mantenuta da umano",
+   "n": 237,
+   "pct": 60.9
+  },
+  {
+   "nome": "Validazione/correzione umana pre-uso",
+   "n": 120,
+   "pct": 30.8
+  },
+  {
+   "nome": "Decisione finale umana",
+   "n": 103,
+   "pct": 26.5
+  },
+  {
+   "nome": "Supervisione per eccezioni/escalation",
+   "n": 92,
+   "pct": 23.7
+  },
+  {
+   "nome": "Interpretazione/analisi umana dei risultati",
+   "n": 61,
+   "pct": 15.7
+  }
+ ],
+ "tipo_beneficiario": [
+  {
+   "nome": "Beneficiario finale della missione",
+   "n": 326,
+   "pct": 83.8
+  },
+  {
+   "nome": "Organizzazione/interno",
+   "n": 200,
+   "pct": 51.4
+  },
+  {
+   "nome": "Organizzazione/ente terzo/PA",
+   "n": 46,
+   "pct": 11.8
+  }
+ ],
+ "collaborazioni": {
+  "n_implementazioni_con_collaboratore": 35,
+  "pct": 9.0,
+  "top_collaboratori": [
+   {
+    "nome": "IBM",
+    "n": 4
+   },
+   {
+    "nome": "Cisco",
+    "n": 2
+   },
+   {
+    "nome": "Microsoft AI for Good Lab",
+    "n": 2
+   },
+   {
+    "nome": "EPFL",
+    "n": 1
+   },
+   {
+    "nome": "ETHZ",
+    "n": 1
+   },
+   {
+    "nome": "Uber",
+    "n": 1
+   },
+   {
+    "nome": "Wieden+Kennedy",
+    "n": 1
+   },
+   {
+    "nome": "SHOUT-IT-NOW",
+    "n": 1
+   },
+   {
+    "nome": "Humanitech",
+    "n": 1
+   },
+   {
+    "nome": "One Acre Fund",
+    "n": 1
+   }
+  ]
+ },
+ "dimensione_organizzativa": [
+  {
+   "nome": "Grande",
+   "n": 140,
+   "pct": 37.7
+  },
+  {
+   "nome": "Media",
+   "n": 118,
+   "pct": 31.8
+  },
+  {
+   "nome": "Piccola-Media",
+   "n": 39,
+   "pct": 10.5
+  },
+  {
+   "nome": "Piccola",
+   "n": 33,
+   "pct": 8.9
+  },
+  {
+   "nome": "Media-Grande",
+   "n": 28,
+   "pct": 7.5
+  },
+  {
+   "nome": "Molto Grande",
+   "n": 9,
+   "pct": 2.4
+  },
+  {
+   "nome": "Non disponibile",
+   "n": 3,
+   "pct": 0.8
+  },
+  {
+   "nome": "Molto Piccola",
+   "n": 1,
+   "pct": 0.3
+  }
+ ],
+ "settori_missione_diffusi": [
+  {
+   "nome": "Salute/sanità",
+   "n": 107,
+   "pct": 27.5
+  },
+  {
+   "nome": "Ambiente/conservazione natura",
+   "n": 69,
+   "pct": 17.7
+  },
+  {
+   "nome": "Aiuti umanitari/rifugiati/disastri",
+   "n": 53,
+   "pct": 13.6
+  },
+  {
+   "nome": "Istruzione/formazione",
+   "n": 49,
+   "pct": 12.6
+  },
+  {
+   "nome": "Sviluppo economico/finanza inclusiva/lavoro",
+   "n": 46,
+   "pct": 11.8
+  },
+  {
+   "nome": "Inclusione sociale/povertà/assistenza sociale",
+   "n": 36,
+   "pct": 9.3
+  },
+  {
+   "nome": "Diritti umani/giustizia/legale",
+   "n": 35,
+   "pct": 9.0
+  },
+  {
+   "nome": "Violenza di genere/protezione vulnerabili",
+   "n": 31,
+   "pct": 8.0
+  },
+  {
+   "nome": "Disabilità/accessibilità",
+   "n": 20,
+   "pct": 5.1
+  },
+  {
+   "nome": "Salute mentale/supporto psicologico",
+   "n": 18,
+   "pct": 4.6
+  }
+ ],
+ "trend_anno": [
+  {
+   "anno": "2016",
+   "n": 1
+  },
+  {
+   "anno": "2018",
+   "n": 1
+  },
+  {
+   "anno": "2019",
+   "n": 3
+  },
+  {
+   "anno": "2020",
+   "n": 5
+  },
+  {
+   "anno": "2021",
+   "n": 2
+  },
+  {
+   "anno": "2022",
+   "n": 5
+  },
+  {
+   "anno": "2023",
+   "n": 17
+  },
+  {
+   "anno": "2024",
+   "n": 44
+  },
+  {
+   "anno": "2025",
+   "n": 36
+  },
+  {
+   "anno": "2026",
+   "n": 6
+  }
+ ],
+ "meta": {
+  "n_implementazioni": 389,
+  "n_organizzazioni": 371,
+  "n_paesi": 79,
+  "n_tecniche": 15,
+  "n_fornitori": 10,
+  "n_fonti": 275,
+  "data_costruzione": "2026-08-24"
+ }
+}
