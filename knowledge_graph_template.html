@@ -146,8 +146,9 @@
 
 <header>
   <h1>Knowledge Graph — Ricerca AI Terzo Settore</h1>
-  <p class="subtitle">Cerca un'organizzazione, un paese o una tecnologia e scopri con cosa è collegata: stesso grafo dell'<a href="https://github.com/lazzaappl-design/Ricerca-AI-Terzo-Settore-dataset/blob/main/knowledge_layer/graph_schema.md">Osservatorio</a>, qui esplorabile nodo per nodo senza bisogno di installare nulla.</p>
-  <p class="subtitle" style="font-size:0.82rem;">Non include i campi di testo libero del corpus (per la stessa ragione di privacy spiegata nel <a href="https://github.com/lazzaappl-design/Ricerca-AI-Terzo-Settore-dataset">repository</a>). Torna all'<a href="osservatorio_ai_terzo_settore.html">Osservatorio</a>.</p>
+  <p class="subtitle">407 casi reali di IA nel Terzo Settore, collegati tra loro: organizzazioni, paesi, tecnologie, benefici e criticità. Cerca un tema per vedere a cosa è collegato.</p>
+  <p class="subtitle" style="font-size:0.85rem;">Qui esplori i collegamenti caso per caso. Per i pattern che emergono guardando l'insieme — tassonomie, correlazioni, l'analisi oltre il semplice conteggio — vedi l'<a href="osservatorio_ai_terzo_settore.html">Osservatorio</a> e la <a href="https://github.com/lazzaappl-design/Ricerca-AI-Terzo-Settore-dataset/blob/main/tassonomia_interpretativa.md">tassonomia interpretativa</a>.</p>
+  <p class="subtitle" style="font-size:0.78rem;">Non include i campi di testo libero del corpus, per la stessa ragione di privacy spiegata nel <a href="https://github.com/lazzaappl-design/Ricerca-AI-Terzo-Settore-dataset">repository</a>.</p>
   <div class="statbar" id="statbar"></div>
 </header>
 
@@ -162,9 +163,9 @@
 </div>
 
 <div class="toolbar">
-  <button id="btnOverview">Vista d'insieme</button>
+  <button id="btnOverview">Un esempio di partenza</button>
   <button id="btnReset">Ricomincia</button>
-  <div class="hint">Clicca un pallino per scoprire con cosa è collegato</div>
+  <div class="hint">Clicca un pallino per vedere i suoi collegamenti diretti — puoi continuare a esplorare da lì</div>
 </div>
 
 <main class="layout">
@@ -185,7 +186,7 @@
 </main>
 
 <footer>
-  <p>Grafo derivato da <a href="https://github.com/lazzaappl-design/Ricerca-AI-Terzo-Settore-dataset/blob/main/knowledge_layer/graph_schema.md">knowledge_layer/graph_schema.md</a> — 407 implementazioni verificate, 386 organizzazioni, 81 paesi. Dataset completo e metodologia: <a href="https://github.com/lazzaappl-design/Ricerca-AI-Terzo-Settore-dataset">GitHub</a>.</p>
+  <p>407 implementazioni verificate, 386 organizzazioni, 81 paesi. Per i pattern che emergono dall'insieme dei dati: <a href="osservatorio_ai_terzo_settore.html">Osservatorio</a> e <a href="https://github.com/lazzaappl-design/Ricerca-AI-Terzo-Settore-dataset/blob/main/tassonomia_interpretativa.md">tassonomia interpretativa</a>. Dataset completo, metodologia e schema tecnico: <a href="https://github.com/lazzaappl-design/Ricerca-AI-Terzo-Settore-dataset">GitHub</a>.</p>
 </footer>
 
 <script id="graph-data" type="application/json">__GRAPH_DATA_JSON__</script>
@@ -215,6 +216,9 @@
   };
   const HUB_TYPES = ['Paese','TecnicaIA','SettoreMissione','Beneficio','Criticita','CategoriaOrganizzativa',
     'TipoBeneficiario','TipoSupervisioneUmana','Fornitore','FunzioneOrganizzativa','Programma','ModelloIA','Software'];
+  // Un click su un nodo molto connesso (es. un paese con 80 casi) non deve far comparire 80 pallini insieme:
+  // ogni espansione ne mostra al massimo questi, il resto resta consultabile ma non ingombra la vista.
+  const MAX_EXPAND = 20;
 
   // Etichette leggibili per le proprietà tecniche del corpus.
   const FRIENDLY_LABELS = {
@@ -302,7 +306,7 @@
     const chip = document.createElement('span');
     chip.className = 'chip';
     chip.textContent = name;
-    chip.onclick = () => selectNode(match.id, true);
+    chip.onclick = () => focusNode(match.id, true);
     examplesBox.appendChild(chip);
   });
 
@@ -348,7 +352,7 @@
     return { data: {
       id: n.id, label: n.name.length > 34 ? n.name.slice(0,32)+'…' : n.name,
       type: n.type, color: COLORS[n.type] || '#999',
-      size: 16 + Math.min(46, degreeOf(n.id) * 0.9),
+      size: 14 + Math.min(28, degreeOf(n.id) * 0.55),
     }};
   }
   function edgeId(a,b,t){ return a+'__'+t+'__'+b; }
@@ -377,13 +381,29 @@
 
   function relayout(animate){
     cy.layout({ name: 'cose', animate: !!animate, animationDuration: 400,
-      padding: 30, nodeRepulsion: 9000, idealEdgeLength: 70, fit: true }).run();
+      padding: 40, nodeRepulsion: 420000, idealEdgeLength: 100, edgeElasticity: 100,
+      nodeOverlap: 24, gravity: 40, numIter: 1500, fit: true }).run();
   }
 
+  // Punto di partenza leggero: non "tutte le categorie da esplodere", ma 2-3 esempi concreti
+  // gia' collegati ai loro casi reali, cosi' si vede subito a cosa serve il grafo.
+  function topByType(type){
+    let best = null, bestDeg = -1;
+    for (const n of raw.nodes) {
+      if (n.type !== type) continue;
+      const d = degreeOf(n.id);
+      if (d > bestDeg) { best = n; bestDeg = d; }
+    }
+    return best;
+  }
   function loadOverview(){
     cy.elements().remove();
-    const eles = raw.nodes.filter(n => HUB_TYPES.includes(n.type)).map(nodeToEle);
-    cy.add(eles);
+    const seeds = ['Paese', 'TecnicaIA', 'Organizzazione'].map(topByType).filter(Boolean);
+    seeds.forEach(s => ensureNode(s.id));
+    seeds.forEach(s => {
+      (adj[s.id] || []).slice(0, 6).forEach(({other}) => ensureNode(other));
+      ensureEdgesFor(s.id);
+    });
     relayout(false);
     refreshEmptyState();
   }
@@ -396,14 +416,15 @@
 
   function expandNode(id){
     ensureNode(id);
-    (adj[id] || []).forEach(({other}) => ensureNode(other));
+    (adj[id] || []).slice(0, MAX_EXPAND).forEach(({other}) => ensureNode(other));
     ensureEdgesFor(id);
     relayout(true);
     refreshEmptyState();
   }
 
   function isolateNode(id){
-    const keep = new Set([id, ...((adj[id]||[]).map(x => x.other))]);
+    const keepNeighbors = (adj[id] || []).slice(0, MAX_EXPAND).map(x => x.other);
+    const keep = new Set([id, ...keepNeighbors]);
     cy.nodes().forEach(n => { if (!keep.has(n.id())) n.remove(); });
     refreshEmptyState();
   }
@@ -416,6 +437,14 @@
     }
     cy.nodes().removeClass('selected');
     cy.getElementById(id).addClass('selected');
+  }
+
+  // Una nuova ricerca apre un nuovo argomento: ripulisce la vista invece di accumularsi
+  // sopra quella precedente. Cliccare un pallino gia' visibile, invece, approfondisce
+  // l'esplorazione in corso (resta additivo) — sono due azioni diverse per l'utente.
+  function focusNode(id, center){
+    cy.elements().remove();
+    selectNode(id, center);
   }
 
   // ---- detail panel ----
@@ -435,15 +464,18 @@
     const secondaryKeys = Object.keys(props).filter(k => !primaryKeys.includes(k));
     const secondaryRows = secondaryKeys.map(k => propRow(k, props[k])).join('');
     const neighCount = (adj[id] || []).length;
+    const neighLabel = neighCount > MAX_EXPAND
+      ? `${neighCount} <span style="color:var(--muted); font-weight:400;">(ne mostriamo al massimo ${MAX_EXPAND} alla volta)</span>`
+      : String(neighCount);
     detailPanel.innerHTML = `
       <h3>Dettaglio</h3>
       <div class="dname">${escapeHtml(n.name)}</div>
       <div class="dtype" style="background:${COLORS[n.type]}1f; color:${COLORS[n.type]}; border:1px solid ${COLORS[n.type]}55;">${TYPE_LABELS[n.type] || n.type}</div>
-      <table>${primaryRows}<tr><td class="k">Collegamenti diretti</td><td>${neighCount}</td></tr></table>
+      <table>${primaryRows}<tr><td class="k">Collegamenti diretti</td><td>${neighLabel}</td></tr></table>
       ${secondaryRows ? `<div class="dmore" id="dmoreToggle">Altri dettagli ▾</div><table id="dmoreTable" style="display:none;">${secondaryRows}</table>` : ''}
       <div class="dactions">
         <button data-act="expand">Mostra collegamenti</button>
-        <button data-act="isolate">Mostra solo questo</button>
+        <button data-act="isolate">Nascondi il resto</button>
       </div>`;
     detailPanel.querySelector('[data-act="expand"]').onclick = () => expandNode(id);
     detailPanel.querySelector('[data-act="isolate"]').onclick = () => isolateNode(id);
@@ -493,7 +525,7 @@
         const id = el.getAttribute('data-id');
         searchResults.style.display = 'none';
         searchBox.value = '';
-        selectNode(id, true);
+        focusNode(id, true);
       };
     });
   });
@@ -531,7 +563,8 @@
   document.getElementById('btnOverview').onclick = loadOverview;
   document.getElementById('btnReset').onclick = clearAll;
 
-  // Parte già con una vista d'insieme: meno un passaggio per chi arriva per la prima volta.
+  // Parte già con un esempio concreto e collegato: meno un passaggio per chi arriva per la prima volta,
+  // senza scaricare addosso decine di categorie da esplodere una per una.
   loadOverview();
 })();
 </script>
