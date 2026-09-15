@@ -37,7 +37,7 @@ out = {}
 
 # 1. Tecniche IA piu' diffuse
 c = collections.Counter(r['Target_Node_ID'] for r in by_type['USA_TECNICA'])
-out['tecniche_diffuse'] = [{"nome": techniques[tid]['nome'], "n": n, "pct": round(100*n/389,1)} for tid,n in c.most_common(10)]
+out['tecniche_diffuse'] = [{"nome": techniques[tid]['nome'], "n": n, "pct": round(100*n/len(impl),1)} for tid,n in c.most_common(10)]
 
 # 2. Tecniche associate a servizi rivolti ai beneficiari finali (vs interno)
 missione_id = [k for k,v in beneficiary_types.items() if v['nome']=='Beneficiario finale della missione'][0]
@@ -132,18 +132,18 @@ out['programmi_ricorrenti'] = [{"nome": programs[pid]['nome'], "n": n} for pid,n
 
 # 9. Livello di supervisione umana
 c = collections.Counter(r['Target_Node_ID'] for r in by_type['COINVOLGE_UMANO'])
-out['supervisione_umana'] = [{"nome": oversight_types[tid]['nome'], "n": n, "pct": round(100*n/389,1)} for tid,n in c.most_common()]
+out['supervisione_umana'] = [{"nome": oversight_types[tid]['nome'], "n": n, "pct": round(100*n/len(impl),1)} for tid,n in c.most_common()]
 
 # 10. Chi beneficia
 c = collections.Counter(r['Target_Node_ID'] for r in by_type['HA_BENEFICIARIO'])
-out['tipo_beneficiario'] = [{"nome": beneficiary_types[tid]['nome'], "n": n, "pct": round(100*n/389,1)} for tid,n in c.most_common()]
+out['tipo_beneficiario'] = [{"nome": beneficiary_types[tid]['nome'], "n": n, "pct": round(100*n/len(impl),1)} for tid,n in c.most_common()]
 
 # 11. Collaborazioni multi-stakeholder
 collab_impls = set(r['Source_Node_ID'] for r in by_type['REALIZZATO_CON'])
 c = collections.Counter(r['Target_Node_ID'] for r in by_type['REALIZZATO_CON'])
 out['collaborazioni'] = {
     "n_implementazioni_con_collaboratore": len(collab_impls),
-    "pct": round(100*len(collab_impls)/389,1),
+    "pct": round(100*len(collab_impls)/len(impl),1),
     "top_collaboratori": [{"nome": collaborators[cid]['nome'], "n": n} for cid,n in c.most_common(10)]
 }
 
@@ -153,7 +153,7 @@ out['dimensione_organizzativa'] = [{"nome": k, "n": v, "pct": round(100*v/len(or
 
 # 13. Settori missione piu' indirizzati
 c = collections.Counter(r['Target_Node_ID'] for r in by_type['INDIRIZZA_SETTORE'])
-out['settori_missione_diffusi'] = [{"nome": sectors[sid]['nome'], "n": n, "pct": round(100*n/389,1)} for sid,n in c.most_common(10)]
+out['settori_missione_diffusi'] = [{"nome": sectors[sid]['nome'], "n": n, "pct": round(100*n/len(impl),1)} for sid,n in c.most_common(10)]
 
 # 14. Anno / trend temporale
 c = collections.Counter(r['Anno'] for r in impl if r['Anno'])
@@ -167,10 +167,10 @@ out['meta'] = {
     "n_tecniche": len(techniques),
     "n_fornitori": len(vendors),
     "n_fonti": len(load_nodes('fonti.csv')),
-    "data_costruzione": "2026-08-24",
+    "data_costruzione": "2026-09-15",
 }
 
-with open('/sessions/wonderful-focused-faraday/mnt/outputs/observatory_data.json', 'w', encoding='utf-8') as f:
+with open('observatory_data.json', 'w', encoding='utf-8') as f:
     json.dump(out, f, ensure_ascii=False, indent=1)
 
 print("Fatto.")

@@ -2,98 +2,98 @@
  "tecniche_diffuse": [
   {
    "nome": "AI generativa / LLM",
-   "n": 124,
+   "n": 130,
    "pct": 31.9
   },
   {
    "nome": "Chatbot conversazionale",
-   "n": 96,
-   "pct": 24.7
+   "n": 101,
+   "pct": 24.8
   },
   {
    "nome": "Machine learning (generico)",
-   "n": 76,
-   "pct": 19.5
+   "n": 77,
+   "pct": 18.9
   },
   {
    "nome": "IA generica / non specificata",
    "n": 65,
-   "pct": 16.7
+   "pct": 16.0
   },
   {
    "nome": "Machine learning predittivo",
-   "n": 60,
-   "pct": 15.4
+   "n": 61,
+   "pct": 15.0
   },
   {
    "nome": "Computer vision / analisi immagini",
-   "n": 51,
-   "pct": 13.1
+   "n": 53,
+   "pct": 13.0
   },
   {
    "nome": "NLP (testo)",
-   "n": 39,
-   "pct": 10.0
+   "n": 45,
+   "pct": 11.1
   },
   {
    "nome": "Sistema di raccomandazione / matching",
    "n": 29,
-   "pct": 7.5
+   "pct": 7.1
+  },
+  {
+   "nome": "Riconoscimento vocale / audio",
+   "n": 22,
+   "pct": 5.4
   },
   {
    "nome": "Automazione/RPA/orchestrazione",
    "n": 20,
-   "pct": 5.1
-  },
-  {
-   "nome": "Riconoscimento vocale / audio",
-   "n": 18,
-   "pct": 4.6
+   "pct": 4.9
   }
  ],
  "tecniche_beneficiari_finali": [
   {
    "nome": "AI generativa / LLM",
-   "n": 100,
-   "pct_su_missione": 30.7
+   "n": 103,
+   "pct_su_missione": 30.5
   },
   {
    "nome": "Chatbot conversazionale",
-   "n": 81,
-   "pct_su_missione": 24.8
+   "n": 86,
+   "pct_su_missione": 25.4
   },
   {
    "nome": "Machine learning (generico)",
-   "n": 62,
-   "pct_su_missione": 19.0
+   "n": 63,
+   "pct_su_missione": 18.6
   },
   {
    "nome": "IA generica / non specificata",
    "n": 59,
-   "pct_su_missione": 18.1
+   "pct_su_missione": 17.5
   },
   {
    "nome": "Machine learning predittivo",
-   "n": 53,
-   "pct_su_missione": 16.3
+   "n": 54,
+   "pct_su_missione": 16.0
   },
   {
    "nome": "Computer vision / analisi immagini",
-   "n": 45,
-   "pct_su_missione": 13.8
+   "n": 47,
+   "pct_su_missione": 13.9
   },
   {
    "nome": "NLP (testo)",
-   "n": 32,
-   "pct_su_missione": 9.8
+   "n": 35,
+   "pct_su_missione": 10.4
   },
   {
    "nome": "Sistema di raccomandazione / matching",
    "n": 22,
-   "pct_su_missione": 6.7
+   "pct_su_missione": 6.5
   }
  ],
- "n_implementazioni_beneficiario_finale": 326,
+ "n_implementazioni_beneficiario_finale": 338,
  "cooperative_vs_fondazioni": {
   "cooperative": {
    "n_org": 3,
@@ -118,20 +118,20 @@
    ]
   },
   "fondazioni": {
-   "n_org": 22,
-   "n_impl": 23,
+   "n_org": 26,
+   "n_impl": 27,
    "top_tecniche": [
     [
      "Chatbot conversazionale",
-     9
+     10
     ],
     [
      "Computer vision / analisi immagini",
-     7
+     8
     ],
     [
      "AI generativa / LLM",
-     5
+     7
     ],
     [
      "Machine learning (generico)",
@@ -150,6 +150,10 @@
    "n": 3
   },
   {
+   "nome": "Mercy Corps",
+   "n": 3
+  },
+  {
    "nome": "International Rescue Committee (IRC)",
    "n": 3
   },
@@ -158,11 +162,11 @@
    "n": 3
   },
   {
-   "nome": "Greenpeace Australia Pacific",
-   "n": 2
+   "nome": "RAINN (Rape, Abuse & Incest National Network)",
+   "n": 3
   },
   {
-   "nome": "Mercy Corps",
+   "nome": "Greenpeace Australia Pacific",
    "n": 2
   },
   {
@@ -188,14 +192,18 @@
   {
    "nome": "EverythingALS (Peter Cohen Foundation)",
    "n": 2
-  },
-  {
-   "nome": "RAINN (Rape, Abuse & Incest National Network)",
-   "n": 2
   }
  ],
- "n_organizzazioni_multi_implementazione": 15,
+ "n_organizzazioni_multi_implementazione": 16,
  "fornitori_multi_settore": [
+  {
+   "nome": "Non specificato / non nominato",
+   "n_settori": 17
+  },
+  {
+   "nome": "Proprietario/sviluppato internamente",
+   "n_settori": 17
+  },
   {
    "nome": "Amazon/AWS (Bedrock/Personalize)",
    "n_settori": 17
@@ -206,23 +214,27 @@
   },
   {
    "nome": "Google (Gemini/DeepMind/Vertex)",
-   "n_settori": 12
+   "n_settori": 13
   },
   {
    "nome": "OpenAI (GPT/ChatGPT)",
-   "n_settori": 12
+   "n_settori": 13
+  },
+  {
+   "nome": "Open source",
+   "n_settori": 11
   },
   {
    "nome": "Salesforce (Agentforce/Einstein)",
    "n_settori": 10
   },
   {
-   "nome": "IBM (Watson/Garage)",
-   "n_settori": 8
+   "nome": "Anthropic (Claude)",
+   "n_settori": 9
   },
   {
-   "nome": "Anthropic (Claude)",
-   "n_settori": 7
+   "nome": "IBM (Watson/Garage)",
+   "n_settori": 8
   }
  ],
  "paesi_varieta_tecniche": [
@@ -251,11 +263,11 @@
    "n_tecniche": 8
   },
   {
-   "nome": "Perù",
+   "nome": "Colombia",
    "n_tecniche": 8
   },
   {
-   "nome": "Colombia",
+   "nome": "Perù",
    "n_tecniche": 8
   },
   {
@@ -336,7 +348,7 @@
   },
   {
    "nome": "Patrick J. McGovern Foundation - grant",
-   "n": 49
+   "n": 50
   },
   {
    "nome": "Google.org",
@@ -358,50 +370,50 @@
  "supervisione_umana": [
   {
    "nome": "Esecuzione/relazione diretta mantenuta da umano",
-   "n": 237,
-   "pct": 60.9
+   "n": 239,
+   "pct": 58.7
   },
   {
    "nome": "Validazione/correzione umana pre-uso",
-   "n": 120,
-   "pct": 30.8
+   "n": 132,
+   "pct": 32.4
   },
   {
    "nome": "Decisione finale umana",
-   "n": 103,
-   "pct": 26.5
+   "n": 106,
+   "pct": 26.0
   },
   {
    "nome": "Supervisione per eccezioni/escalation",
-   "n": 92,
-   "pct": 23.7
+   "n": 93,
+   "pct": 22.9
   },
   {
    "nome": "Interpretazione/analisi umana dei risultati",
-   "n": 61,
-   "pct": 15.7
+   "n": 66,
+   "pct": 16.2
   }
  ],
  "tipo_beneficiario": [
   {
    "nome": "Beneficiario finale della missione",
-   "n": 326,
-   "pct": 83.8
+   "n": 338,
+   "pct": 83.0
   },
   {
    "nome": "Organizzazione/interno",
-   "n": 200,
-   "pct": 51.4
+   "n": 204,
+   "pct": 50.1
   },
   {
    "nome": "Organizzazione/ente terzo/PA",
-   "n": 46,
-   "pct": 11.8
+   "n": 49,
+   "pct": 12.0
   }
  ],
  "collaborazioni": {
-  "n_implementazioni_con_collaboratore": 35,
-  "pct": 9.0,
+  "n_implementazioni_con_collaboratore": 38,
+  "pct": 9.3,
   "top_collaboratori": [
    {
     "nome": "IBM",
@@ -448,38 +460,38 @@
  "dimensione_organizzativa": [
   {
    "nome": "Grande",
-   "n": 140,
-   "pct": 37.7
+   "n": 142,
+   "pct": 36.8
   },
   {
    "nome": "Media",
-   "n": 118,
-   "pct": 31.8
+   "n": 120,
+   "pct": 31.1
+  },
+  {
+   "nome": "Piccola",
+   "n": 40,
+   "pct": 10.4
   },
   {
    "nome": "Piccola-Media",
    "n": 39,
-   "pct": 10.5
-  },
-  {
-   "nome": "Piccola",
-   "n": 33,
-   "pct": 8.9
+   "pct": 10.1
   },
   {
    "nome": "Media-Grande",
    "n": 28,
-   "pct": 7.5
+   "pct": 7.3
   },
   {
    "nome": "Molto Grande",
    "n": 9,
-   "pct": 2.4
+   "pct": 2.3
   },
   {
    "nome": "Non disponibile",
-   "n": 3,
-   "pct": 0.8
+   "n": 7,
+   "pct": 1.8
   },
   {
    "nome": "Molto Piccola",
@@ -490,53 +502,53 @@
  "settori_missione_diffusi": [
   {
    "nome": "Salute/sanità",
-   "n": 107,
-   "pct": 27.5
+   "n": 109,
+   "pct": 26.8
   },
   {
    "nome": "Ambiente/conservazione natura",
-   "n": 69,
-   "pct": 17.7
+   "n": 70,
+   "pct": 17.2
   },
   {
    "nome": "Aiuti umanitari/rifugiati/disastri",
-   "n": 53,
-   "pct": 13.6
+   "n": 55,
+   "pct": 13.5
   },
   {
    "nome": "Istruzione/formazione",
-   "n": 49,
-   "pct": 12.6
+   "n": 51,
+   "pct": 12.5
   },
   {
    "nome": "Sviluppo economico/finanza inclusiva/lavoro",
-   "n": 46,
-   "pct": 11.8
+   "n": 47,
+   "pct": 11.5
   },
   {
    "nome": "Inclusione sociale/povertà/assistenza sociale",
-   "n": 36,
+   "n": 38,
    "pct": 9.3
   },
   {
    "nome": "Diritti umani/giustizia/legale",
-   "n": 35,
-   "pct": 9.0
+   "n": 37,
+   "pct": 9.1
   },
   {
    "nome": "Violenza di genere/protezione vulnerabili",
-   "n": 31,
-   "pct": 8.0
+   "n": 33,
+   "pct": 8.1
   },
   {
    "nome": "Disabilità/accessibilità",
-   "n": 20,
-   "pct": 5.1
+   "n": 21,
+   "pct": 5.2
   },
   {
    "nome": "Salute mentale/supporto psicologico",
-   "n": 18,
-   "pct": 4.6
+   "n": 19,
+   "pct": 4.7
   }
  ],
  "trend_anno": [
@@ -566,15 +578,15 @@
   },
   {
    "anno": "2023",
-   "n": 17
+   "n": 18
   },
   {
    "anno": "2024",
-   "n": 44
+   "n": 45
   },
   {
    "anno": "2025",
-   "n": 36
+   "n": 42
   },
   {
    "anno": "2026",
@@ -582,12 +594,12 @@
   }
  ],
  "meta": {
-  "n_implementazioni": 389,
-  "n_organizzazioni": 371,
-  "n_paesi": 79,
+  "n_implementazioni": 407,
+  "n_organizzazioni": 386,
+  "n_paesi": 81,
   "n_tecniche": 15,
   "n_fornitori": 10,
-  "n_fonti": 275,
-  "data_costruzione": "2026-08-24"
+  "n_fonti": 293,
+  "data_costruzione": "2026-09-15"
  }
 }

@@ -1,20 +1,26 @@
 # Ricerca AI Terzo Settore
 
-Un osservatorio di ricerca sull'adozione dell'intelligenza artificiale nelle organizzazioni del Terzo Settore (ONG, non-profit, fondazioni, cooperative sociali) a livello globale: 389 casi verificati manualmente, uno per uno, con fonte primaria citata per ciascuno.
+Un osservatorio di ricerca sull'adozione dell'intelligenza artificiale nelle organizzazioni del Terzo Settore (ONG, non-profit, fondazioni, cooperative sociali) a livello globale: 407 casi verificati manualmente, uno per uno, con fonte primaria citata per ciascuno.
 
 **Osservatorio pubblico (14 analisi guidate, grafici):** https://osservatorio-ai-terzo-settore.lovable.app
+
+## Cosa questo dataset NON è
+
+Prima di leggere qualunque numero: questo non è un censimento e non stima la prevalenza reale dell'adozione IA nel Terzo Settore. È una raccolta di casi pubblicamente documentabili, costruita caso per caso a partire da fonti pubbliche esistenti (siti ufficiali, case study di fornitori tecnologici, giornalismo indipendente). Il metodo è strutturalmente distorto verso organizzazioni con presenza web in lingua inglese/europee maggiori e capacità di comunicazione — un risultato pari a zero per un paese o settore significa "non trovato con questo metodo", mai "non esiste". Gli Stati Uniti da soli coprono il 40,5% delle occorrenze-paese; il 78,1% dei record è classificato genericamente "ONG". Il dettaglio completo dei limiti è in [`tassonomia_interpretativa.md`](tassonomia_interpretativa.md) §0 e in `registro_metodologico.md`.
 
 ## Cosa c'è in questo repository
 
 - `observatory_data.json` — i 14 aggregati statistici alla base dell'osservatorio (tecniche IA più diffuse, ruolo della supervisione umana, chi beneficia realmente delle implementazioni, distribuzione geografica, trend temporale e altro), in formato riusabile da chiunque.
-- `knowledge_layer/graph_schema.md` e `knowledge_layer/import.cypher` — lo schema del knowledge graph (Neo4j) su cui è costruita l'analisi: 17 tipi di nodo, le relazioni tra organizzazioni, implementazioni, tecniche, benefici, criticità, supervisione umana, collaborazioni.
+- `tassonomia_interpretativa.md` — un'analisi interpretativa oltre il semplice conteggio: una tassonomia dell'adozione basata su chi beneficia (non sul livello tecnico, che risulta indipendente), e un finding controintuitivo sulla supervisione umana che cresce, non diminuisce, con la maturità tecnica del sistema.
+- `indice_fonti.csv` / `indice_fonti.json` — indice pubblico dei 407 casi con organizzazione, paese, anno, categoria, settore, fonte primaria e fonte qualificata (URL), per verificare ogni caso alla fonte originale. Non include i campi di testo libero del corpus (workflow, osservazioni, problema affrontato): quelli restano non pubblicati per la ragione spiegata sotto.
+- `knowledge_layer/graph_schema.md` e `knowledge_layer/import.cypher` — lo schema del knowledge graph (Neo4j) su cui è costruita l'analisi: 17 tipi di nodo, le relazioni tra organizzazioni, implementazioni, tecniche, benefici, criticità, supervisione umana, collaborazioni. Importabile in qualunque istanza Neo4j (anche il piano gratuito AuraDB Free).
 - `registro_metodologico.md` — il registro completo, ciclo per ciclo, di come il corpus è stato costruito: criteri di inclusione/esclusione applicati, casi scartati e perché, correzioni metodologiche in corsa, e una nota esplicita sui limiti del campione (non è un censimento, e l'assenza di nuove categorie di tecnica in un ciclo non è mai stata interpretata come segnale di saturazione della varietà reale finché continuavano a emergere nuove organizzazioni).
 - `protocollo_ricerca_settimanale.md` — il protocollo che guida i cicli di ricerca ricorrenti che continuano ad ampliare il corpus.
 - Script Python (`*_tagger.py`, `*_parser.py`, `build_knowledge_layer.py`, `compute_observatory.py`) — la pipeline riusabile con cui i dati grezzi vengono classificati, taggati e trasformati nel knowledge graph e negli aggregati dell'osservatorio.
 
 ## Cosa NON c'è (per scelta, non per dimenticanza)
 
-Il corpus grezzo (i 389 record con i campi di testo libero — problema affrontato, workflow, osservazioni) non è ancora pubblico. Contiene, in un sottoinsieme di casi, riferimenti a persone reali in contesti sensibili (superstiti di violenza, rifugiati, pazienti), che richiedono una revisione dedicata prima di una pubblicazione integrale. Finché quella revisione non è completa, restano pubblici solo i dati aggregati — nessuna narrazione a livello di singolo individuo.
+Il corpus grezzo (i 407 record con i campi di testo libero — problema affrontato, workflow, osservazioni) non è ancora pubblico. Contiene, in un sottoinsieme di casi, riferimenti a persone reali in contesti sensibili (superstiti di violenza, rifugiati, pazienti), che richiedono una revisione dedicata prima di una pubblicazione integrale. Finché quella revisione non è completa, restano pubblici solo i dati aggregati — nessuna narrazione a livello di singolo individuo.
 
 ## Come è costruito il corpus
 
