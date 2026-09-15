@@ -128,6 +128,15 @@
   #detailPanel .dempty { color: var(--muted); font-size: 0.87rem; }
   #detailPanel .dmore { margin-top: 10px; font-size: 0.78rem; color: var(--muted); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
 
+  .dneighbors { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 12px; }
+  .dneighbors-title { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 10px; font-weight: 600; }
+  .dneighbor-group { margin-bottom: 10px; }
+  .dneighbor-group .gtitle { font-size: 0.76rem; color: var(--muted); margin-bottom: 4px; }
+  .glist { max-height: 170px; overflow-y: auto; border: 1px solid var(--line); border-radius: 8px; }
+  .gitem { padding: 6px 10px; font-size: 0.82rem; cursor: pointer; border-bottom: 1px solid var(--line); }
+  .gitem:last-child { border-bottom: none; }
+  .gitem:hover { background: var(--accent-soft); }
+
   footer {
     max-width: 1300px; margin: 0 auto 50px; padding: 20px 20px 0; border-top: 1px solid var(--line);
     color: var(--muted); font-size: 0.82rem;
@@ -377,6 +386,7 @@
   const emptyState = document.getElementById('emptyState');
   function refreshEmptyState(){
     emptyState.classList.toggle('hidden', cy.nodes().length > 0);
+    applyTypeFilter();
   }
 
   function relayout(animate){
@@ -455,6 +465,23 @@
   function propRow(k, v){
     return `<tr><td class="k">${escapeHtml(FRIENDLY_LABELS[k] || k)}</td><td>${linkify(escapeHtml(String(v)))}</td></tr>`;
   }
+  // Il grafo mostra al massimo MAX_EXPAND pallini per volta (per restare leggibile), ma qui
+  // sotto l'elenco è sempre completo: un contatore da solo ("338 collegamenti") non dice nulla
+  // di utile, un elenco di nomi sì. Si applica a ogni nodo, non solo a quelli molto connessi.
+  function neighborListHtml(id){
+    const neighbors = (adj[id] || []).map(({other}) => nodesById[other]).filter(Boolean);
+    if (!neighbors.length) return '';
+    const groups = {};
+    neighbors.forEach(n => { (groups[n.type] = groups[n.type] || []).push(n); });
+    const groupHtml = Object.keys(groups)
+      .sort((a, b) => groups[b].length - groups[a].length)
+      .map(t => {
+        const items = groups[t].slice().sort((a, b) => a.name.localeCompare(b.name))
+          .map(n => `<div class="gitem" data-id="${n.id}">${escapeHtml(n.name)}</div>`).join('');
+        return `<div class="dneighbor-group"><div class="gtitle">${escapeHtml(TYPE_LABELS[t] || t)} — ${groups[t].length}</div><div class="glist">${items}</div></div>`;
+      }).join('');
+    return `<div class="dneighbors"><div class="dneighbors-title">Elenco dei collegamenti (${neighbors.length})</div>${groupHtml}</div>`;
+  }
   function showDetail(id){
     const n = nodesById[id];
     if (!n) return;
@@ -476,7 +503,8 @@
       <div class="dactions">
         <button data-act="expand">Mostra collegamenti</button>
         <button data-act="isolate">Nascondi il resto</button>
-      </div>`;
+      </div>
+      ${neighborListHtml(id)}`;
     detailPanel.querySelector('[data-act="expand"]').onclick = () => expandNode(id);
     detailPanel.querySelector('[data-act="isolate"]').onclick = () => isolateNode(id);
     const moreToggle = detailPanel.querySelector('#dmoreToggle');
@@ -488,6 +516,9 @@
         moreToggle.textContent = open ? 'Altri dettagli ▾' : 'Altri dettagli ▴';
       };
     }
+    detailPanel.querySelectorAll('.gitem').forEach(el => {
+      el.onclick = () => focusNode(el.getAttribute('data-id'), true);
+    });
   }
   function escapeHtml(s){ return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
   function linkify(s){ return s.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener" style="color:var(--accent);word-break:break-all;">$1</a>'); }
@@ -534,16 +565,25 @@
   });
 
   // ---- legend / type filter (raccolto, chiuso di default) ----
+  // Si parte con visibili solo i tipi principali (quelli già in evidenza nella barra delle
+  // statistiche): cliccare un tipo lo AGGIUNGE alla vista, non lo nasconde — il contrario di
+  // prima, perché di default è più utile vedere poco e scegliere cosa aggiungere che il contrario.
+  const DEFAULT_SHOWN_TYPES = ['Implementazione', 'Organizzazione', 'Paese', 'TecnicaIA'];
+  const shownTypes = new Set(DEFAULT_SHOWN_TYPES);
+  function applyTypeFilter(){
+    cy.nodes().forEach(n => {
+      n.toggleClass('hiddenType', !shownTypes.has(n.data('type')));
+    });
+  }
   const legendToggle = document.getElementById('legendToggle');
   const legendBody = document.getElementById('legendBody');
   legendToggle.onclick = () => {
     legendToggle.classList.toggle('open');
     legendBody.classList.toggle('open');
   };
-  const hiddenTypes = new Set();
   const typeOrder = Object.keys(COLORS).filter(t => (raw.type_counts[t] || 0) > 0);
   legendBody.innerHTML = typeOrder.map(t => `
-    <div class="legend-item" data-type="${t}">
+    <div class="legend-item${shownTypes.has(t) ? '' : ' off'}" data-type="${t}">
       <span class="dot" style="background:${COLORS[t]}"></span>
       <span class="lname">${TYPE_LABELS[t] || t}</span>
       <span class="lcount">${raw.type_counts[t] || 0}</span>
@@ -551,11 +591,9 @@
   legendBody.querySelectorAll('.legend-item').forEach(el => {
     el.onclick = () => {
       const t = el.getAttribute('data-type');
-      if (hiddenTypes.has(t)) { hiddenTypes.delete(t); el.classList.remove('off'); }
-      else { hiddenTypes.add(t); el.classList.add('off'); }
-      cy.nodes().forEach(n => {
-        n.toggleClass('hiddenType', hiddenTypes.has(n.data('type')));
-      });
+      if (shownTypes.has(t)) { shownTypes.delete(t); el.classList.add('off'); }
+      else { shownTypes.add(t); el.classList.remove('off'); }
+      applyTypeFilter();
     };
   });
 
