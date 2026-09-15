@@ -7,9 +7,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.34.2/cytoscape.min.js"></script>
 <style>
   :root {
-    --bg: #0f1115; --card: #171a21; --card-border: #262b36;
-    --text: #e7e9ee; --muted: #9aa3b2; --accent: #5eead4; --accent2: #818cf8;
-    --accent3: #fb923c; --good: #34d399;
+    --bg: #f5f4f1; --card: #ffffff; --card-border: #ddd9d1;
+    --text: #262521; --muted: #7a766d; --accent: #2f2e2a; --accent-soft: #f0eee8;
+    --line: #e6e2d9;
   }
   * { box-sizing: border-box; }
   body {
@@ -17,58 +17,68 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     line-height: 1.5;
   }
+  h1, h2 { font-family: Georgia, "Times New Roman", serif; font-weight: 400; }
   header {
-    padding: 36px 24px 24px; text-align: center;
-    background: radial-gradient(ellipse at top, rgba(94,234,212,0.08), transparent 60%);
-    border-bottom: 1px solid var(--card-border);
+    padding: 40px 24px 22px; text-align: center;
+    background: var(--card); border-bottom: 1px solid var(--card-border);
   }
-  header h1 { font-size: 1.7rem; margin: 0 0 8px; letter-spacing: -0.02em; }
-  header p.subtitle { color: var(--muted); max-width: 720px; margin: 0 auto 6px; font-size: 0.95rem; }
-  header p.subtitle a { color: var(--accent); }
+  header h1 { font-size: 2rem; margin: 0 0 10px; letter-spacing: -0.01em; }
+  header p.subtitle { color: var(--muted); max-width: 680px; margin: 0 auto 6px; font-size: 0.95rem; }
+  header p.subtitle a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
   .statbar {
-    display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; max-width: 900px; margin: 16px auto 0;
+    display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; max-width: 900px; margin: 18px auto 0;
   }
   .statbar .stat {
-    background: var(--card); border: 1px solid var(--card-border); border-radius: 10px;
-    padding: 8px 14px; min-width: 80px;
+    background: var(--accent-soft); border: 1px solid var(--line); border-radius: 8px;
+    padding: 8px 16px; min-width: 84px;
   }
-  .statbar .stat .n { font-size: 1.15rem; font-weight: 700; color: var(--accent); }
-  .statbar .stat .l { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  .statbar .stat .n { font-size: 1.2rem; font-weight: 700; color: var(--accent); }
+  .statbar .stat .l { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+  .searchZone { max-width: 700px; margin: 26px auto 0; padding: 0 20px; text-align: center; }
+  .search-wrap { position: relative; }
+  .searchZone input[type="text"] {
+    width: 100%; background: var(--card); border: 1px solid var(--card-border); color: var(--text);
+    border-radius: 10px; padding: 14px 16px; font-size: 1rem;
+  }
+  .searchZone input[type="text"]:focus { outline: none; border-color: var(--accent); }
+  #searchResults {
+    position: absolute; top: 52px; left: 0; right: 0; z-index: 20;
+    background: var(--card); border: 1px solid var(--card-border); border-radius: 10px;
+    max-height: 300px; overflow-y: auto; display: none; box-shadow: 0 10px 28px rgba(40,38,32,0.12); text-align: left;
+  }
+  #searchResults .res {
+    padding: 10px 14px; font-size: 0.9rem; cursor: pointer; border-bottom: 1px solid var(--line);
+    display: flex; justify-content: space-between; gap: 8px;
+  }
+  #searchResults .res:hover { background: var(--accent-soft); }
+  #searchResults .res .t { color: var(--muted); font-size: 0.72rem; }
+
+  .examples { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; }
+  .examples .elabel { color: var(--muted); font-size: 0.82rem; margin-right: 2px; }
+  .examples .chip {
+    background: var(--card); border: 1px solid var(--card-border); color: var(--text);
+    border-radius: 999px; padding: 6px 14px; font-size: 0.82rem; cursor: pointer;
+  }
+  .examples .chip:hover { border-color: var(--accent); background: var(--accent-soft); }
 
   .toolbar {
-    display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
-    max-width: 1300px; margin: 18px auto 0; padding: 0 20px;
-  }
-  .toolbar input[type="text"] {
-    background: var(--card); border: 1px solid var(--card-border); color: var(--text);
-    border-radius: 8px; padding: 9px 12px; font-size: 0.9rem; width: 280px; max-width: 60vw;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 10px; justify-content: center;
+    max-width: 1300px; margin: 16px auto 0; padding: 0 20px;
   }
   .toolbar button {
     background: var(--card); border: 1px solid var(--card-border); color: var(--text);
-    border-radius: 8px; padding: 9px 14px; font-size: 0.85rem; cursor: pointer;
+    border-radius: 8px; padding: 8px 14px; font-size: 0.85rem; cursor: pointer;
   }
-  .toolbar button:hover { border-color: var(--accent); color: var(--accent); }
-  .toolbar .hint { color: var(--muted); font-size: 0.8rem; margin-left: auto; }
-
-  .search-wrap { position: relative; }
-  #searchResults {
-    position: absolute; top: 42px; left: 0; z-index: 20; width: 320px; max-width: 70vw;
-    background: var(--card); border: 1px solid var(--card-border); border-radius: 8px;
-    max-height: 280px; overflow-y: auto; display: none; box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-  }
-  #searchResults .res {
-    padding: 8px 12px; font-size: 0.85rem; cursor: pointer; border-bottom: 1px solid var(--card-border);
-    display: flex; justify-content: space-between; gap: 8px;
-  }
-  #searchResults .res:hover { background: #1f2430; }
-  #searchResults .res .t { color: var(--muted); font-size: 0.72rem; }
+  .toolbar button:hover { border-color: var(--accent); }
+  .toolbar .hint { color: var(--muted); font-size: 0.8rem; text-align: center; width: 100%; margin-top: 2px; }
 
   main.layout {
-    display: flex; gap: 16px; max-width: 1300px; margin: 14px auto 40px; padding: 0 20px;
+    display: flex; gap: 16px; max-width: 1300px; margin: 18px auto 40px; padding: 0 20px;
     align-items: flex-start;
   }
   #cy-container {
-    flex: 1 1 auto; height: 72vh; min-height: 480px;
+    flex: 1 1 auto; height: 68vh; min-height: 460px;
     background: var(--card); border: 1px solid var(--card-border); border-radius: 14px;
     position: relative; overflow: hidden;
   }
@@ -83,12 +93,20 @@
     flex: 0 0 300px; display: flex; flex-direction: column; gap: 14px;
   }
   .panel {
-    background: var(--card); border: 1px solid var(--card-border); border-radius: 14px; padding: 16px 18px;
+    background: var(--card); border: 1px solid var(--card-border); border-radius: 14px; padding: 18px 20px;
   }
-  .panel h3 { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin: 0 0 10px; }
+  .panel h3 { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 0 0 12px; font-weight: 600; }
+
+  #legendToggle {
+    display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none;
+  }
+  #legendToggle .arrow { color: var(--muted); font-size: 0.75rem; transition: transform 0.15s; }
+  #legendToggle.open .arrow { transform: rotate(180deg); }
+  #legendBody { display: none; margin-top: 10px; }
+  #legendBody.open { display: block; }
 
   .legend-item {
-    display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: 0.82rem; cursor: pointer;
+    display: flex; align-items: center; gap: 8px; padding: 5px 0; font-size: 0.82rem; cursor: pointer;
     user-select: none;
   }
   .legend-item .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
@@ -96,28 +114,29 @@
   .legend-item .lcount { color: var(--muted); font-size: 0.75rem; }
   .legend-item.off { opacity: 0.35; }
 
-  #detailPanel .dname { font-size: 1rem; font-weight: 700; margin-bottom: 2px; }
-  #detailPanel .dtype { display: inline-block; font-size: 0.7rem; padding: 2px 8px; border-radius: 20px; margin-bottom: 12px; }
-  #detailPanel table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-  #detailPanel td { padding: 4px 0; border-bottom: 1px dashed var(--card-border); vertical-align: top; }
-  #detailPanel td.k { color: var(--muted); width: 42%; padding-right: 8px; }
-  #detailPanel .dactions { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+  #detailPanel .dname { font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; }
+  #detailPanel .dtype { display: inline-block; font-size: 0.7rem; padding: 3px 10px; border-radius: 20px; margin-bottom: 14px; font-weight: 600; }
+  #detailPanel table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+  #detailPanel td { padding: 5px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+  #detailPanel td.k { color: var(--muted); width: 46%; padding-right: 8px; }
+  #detailPanel .dactions { margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap; }
   #detailPanel .dactions button {
-    background: #1f2430; border: 1px solid var(--card-border); color: var(--text);
-    border-radius: 6px; padding: 6px 10px; font-size: 0.75rem; cursor: pointer;
+    background: var(--accent-soft); border: 1px solid var(--card-border); color: var(--text);
+    border-radius: 6px; padding: 7px 11px; font-size: 0.78rem; cursor: pointer;
   }
-  #detailPanel .dactions button:hover { border-color: var(--accent); color: var(--accent); }
-  #detailPanel .dempty { color: var(--muted); font-size: 0.85rem; }
+  #detailPanel .dactions button:hover { border-color: var(--accent); }
+  #detailPanel .dempty { color: var(--muted); font-size: 0.87rem; }
+  #detailPanel .dmore { margin-top: 10px; font-size: 0.78rem; color: var(--muted); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
 
   footer {
-    max-width: 1300px; margin: 0 auto 50px; padding: 20px 20px 0; border-top: 1px solid var(--card-border);
+    max-width: 1300px; margin: 0 auto 50px; padding: 20px 20px 0; border-top: 1px solid var(--line);
     color: var(--muted); font-size: 0.82rem;
   }
   footer a { color: var(--accent); }
 
   @media (max-width: 860px) {
     main.layout { flex-direction: column; align-items: stretch; }
-    #cy-container { height: 60vh; }
+    #cy-container { height: 56vh; }
     aside { flex: 1 1 auto; width: 100%; flex-direction: row; flex-wrap: wrap; }
     aside .panel { flex: 1 1 260px; }
   }
@@ -127,34 +146,40 @@
 
 <header>
   <h1>Knowledge Graph — Ricerca AI Terzo Settore</h1>
-  <p class="subtitle">Esplorazione interattiva del grafo che collega organizzazioni, implementazioni, tecniche IA, settori, benefici, criticità, paesi e fonti — versione pubblica e statica dello stesso knowledge graph disponibile su Neo4j (<a href="https://github.com/lazzaappl-design/Ricerca-AI-Terzo-Settore-dataset/blob/main/knowledge_layer/graph_schema.md">schema completo</a>).</p>
-  <p class="subtitle" style="font-size:0.82rem;">I campi di testo libero del corpus (workflow dettagliato, osservazioni, problema affrontato) non sono inclusi in questa vista, per la stessa ragione di privacy spiegata nel <a href="https://github.com/lazzaappl-design/Ricerca-AI-Terzo-Settore-dataset">repository</a>. Torna all'<a href="osservatorio_ai_terzo_settore.html">Osservatorio</a>.</p>
+  <p class="subtitle">Cerca un'organizzazione, un paese o una tecnologia e scopri con cosa è collegata: stesso grafo dell'<a href="https://github.com/lazzaappl-design/Ricerca-AI-Terzo-Settore-dataset/blob/main/knowledge_layer/graph_schema.md">Osservatorio</a>, qui esplorabile nodo per nodo senza bisogno di installare nulla.</p>
+  <p class="subtitle" style="font-size:0.82rem;">Non include i campi di testo libero del corpus (per la stessa ragione di privacy spiegata nel <a href="https://github.com/lazzaappl-design/Ricerca-AI-Terzo-Settore-dataset">repository</a>). Torna all'<a href="osservatorio_ai_terzo_settore.html">Osservatorio</a>.</p>
   <div class="statbar" id="statbar"></div>
 </header>
 
-<div class="toolbar">
+<div class="searchZone">
   <div class="search-wrap">
-    <input type="text" id="searchBox" placeholder="Cerca organizzazione, paese, tecnica...">
+    <input type="text" id="searchBox" placeholder="Es. Croce Rossa, Italia, Chatbot conversazionale...">
     <div id="searchResults"></div>
   </div>
-  <button id="btnOverview">Panoramica categorie</button>
-  <button id="btnReset">Svuota</button>
-  <span class="hint">Clicca un nodo per espandere i suoi collegamenti diretti</span>
+  <div class="examples" id="examples">
+    <span class="elabel">Prova:</span>
+  </div>
+</div>
+
+<div class="toolbar">
+  <button id="btnOverview">Vista d'insieme</button>
+  <button id="btnReset">Ricomincia</button>
+  <div class="hint">Clicca un pallino per scoprire con cosa è collegato</div>
 </div>
 
 <main class="layout">
   <div id="cy-container">
     <div id="cy"></div>
-    <div id="emptyState">Cerca un'organizzazione, un paese o una tecnica IA qui sopra,<br>oppure clicca "Panoramica categorie" per iniziare a esplorare.</div>
+    <div id="emptyState">Caricamento del grafo…</div>
   </div>
   <aside>
     <div class="panel" id="detailPanel">
-      <h3>Dettaglio nodo</h3>
-      <div class="dempty">Clicca un nodo nel grafo per vedere le sue proprietà e i suoi collegamenti.</div>
+      <h3>Dettaglio</h3>
+      <div class="dempty">Clicca un pallino nel grafo per vedere di cosa si tratta.</div>
     </div>
     <div class="panel">
-      <h3>Tipi di nodo (clicca per nascondere/mostrare)</h3>
-      <div id="legend"></div>
+      <div id="legendToggle"><h3 style="margin:0;">Filtra per tipo</h3><span class="arrow">▾</span></div>
+      <div id="legendBody"></div>
     </div>
   </aside>
 </main>
@@ -168,27 +193,47 @@
 (function(){
   const raw = JSON.parse(document.getElementById('graph-data').textContent);
 
+  // Palette desaturata "da report", non neon — coerente con lo stile grigio/editoriale del sito.
   const COLORS = {
-    Implementazione: '#5eead4',
-    Organizzazione: '#818cf8',
-    Paese: '#fb923c',
-    TecnicaIA: '#f472b6',
-    Fornitore: '#facc15',
-    FunzioneOrganizzativa: '#38bdf8',
-    SettoreMissione: '#4ade80',
-    Beneficio: '#34d399',
-    Criticita: '#f87171',
-    Programma: '#a78bfa',
-    Fonte: '#94a3b8',
-    TipoBeneficiario: '#2dd4bf',
-    TipoSupervisioneUmana: '#fb7185',
-    Collaboratore: '#fbbf24',
-    ModelloIA: '#c084fc',
-    Software: '#60a5fa',
-    CategoriaOrganizzativa: '#e879f9',
+    Implementazione: '#4b5563',
+    Organizzazione: '#8b6f47',
+    Paese: '#6b8f71',
+    TecnicaIA: '#a1665e',
+    Fornitore: '#b8963a',
+    FunzioneOrganizzativa: '#5b7c99',
+    SettoreMissione: '#7a8c5c',
+    Beneficio: '#4f9d8a',
+    Criticita: '#b25b52',
+    Programma: '#8a6ea3',
+    Fonte: '#9a9a94',
+    TipoBeneficiario: '#5c8a8a',
+    TipoSupervisioneUmana: '#b98a5e',
+    Collaboratore: '#a68a3f',
+    ModelloIA: '#7c6a99',
+    Software: '#5f7a8c',
+    CategoriaOrganizzativa: '#a1748c',
   };
   const HUB_TYPES = ['Paese','TecnicaIA','SettoreMissione','Beneficio','Criticita','CategoriaOrganizzativa',
     'TipoBeneficiario','TipoSupervisioneUmana','Fornitore','FunzioneOrganizzativa','Programma','ModelloIA','Software'];
+
+  // Etichette leggibili per le proprietà tecniche del corpus.
+  const FRIENDLY_LABELS = {
+    Anno: 'Anno', Stato: 'Stato', Fonte_qualificata: 'Fonte',
+    Livello_integrazione: 'Livello di integrazione', KPI: 'KPI',
+    Tempo_risparmiato: 'Tempo risparmiato', ROI: 'ROI',
+    Livello_prova: 'Livello di evidenza', Grado_completezza: 'Completezza del caso',
+    Grado_verificabilita: 'Verificabilità', Livello_confidenza: 'Livello di confidenza',
+    ID_caso: 'ID caso', Tipo_organizzazione: 'Tipo di organizzazione',
+    Status_legale: 'Status legale', Dimensione: 'Dimensione',
+    Dimensione_dettaglio: 'Dimensione (dettaglio)', N_dipendenti: 'N. dipendenti', Fatturato: 'Fatturato',
+  };
+  // Solo i campi più rilevanti sono mostrati subito; il resto va sotto "Altri dettagli".
+  const PRIMARY_PROPS = {
+    Implementazione: ['Anno', 'Stato', 'Fonte_qualificata'],
+    Organizzazione: ['Tipo_organizzazione', 'Dimensione'],
+  };
+  // Esempi pronti per chi non sa da dove iniziare (nomi verificati presenti nel dataset).
+  const EXAMPLES = ['Italia', 'Chatbot conversazionale', 'AI generativa / LLM', 'Beneficiario finale della missione'];
 
   const nodesById = {};
   raw.nodes.forEach(n => nodesById[n.id] = n);
@@ -202,13 +247,24 @@
 
   // ---- stat bar ----
   const statbar = document.getElementById('statbar');
-  const statHtml = [
-    ['Nodi', raw.n_nodes], ['Relazioni', raw.n_edges],
+  statbar.innerHTML = [
+    ['Casi', raw.type_counts.Implementazione || 0],
     ['Organizzazioni', raw.type_counts.Organizzazione || 0],
-    ['Implementazioni', raw.type_counts.Implementazione || 0],
     ['Paesi', raw.type_counts.Paese || 0],
+    ['Tecniche IA', raw.type_counts.TecnicaIA || 0],
   ].map(([l,n]) => `<div class="stat"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
-  statbar.innerHTML = statHtml;
+
+  // ---- esempi cliccabili ----
+  const examplesBox = document.getElementById('examples');
+  EXAMPLES.forEach(name => {
+    const match = raw.nodes.find(n => n.name === name);
+    if (!match) return;
+    const chip = document.createElement('span');
+    chip.className = 'chip';
+    chip.textContent = name;
+    chip.onclick = () => selectNode(match.id, true);
+    examplesBox.appendChild(chip);
+  });
 
   // ---- cytoscape ----
   const cy = cytoscape({
@@ -217,29 +273,31 @@
       { selector: 'node', style: {
           'background-color': 'data(color)',
           'label': 'data(label)',
-          'font-size': 9,
-          'color': '#e7e9ee',
-          'text-outline-width': 2,
-          'text-outline-color': '#0f1115',
+          'font-size': 10,
+          'font-family': '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif',
+          'color': '#262521',
+          'text-outline-width': 3,
+          'text-outline-color': '#f5f4f1',
+          'text-outline-opacity': 1,
           'width': 'data(size)',
           'height': 'data(size)',
           'text-valign': 'bottom',
-          'text-margin-y': 4,
+          'text-margin-y': 5,
           'text-wrap': 'ellipsis',
-          'text-max-width': 90,
+          'text-max-width': 100,
+          'border-width': 2.5,
+          'border-color': '#f5f4f1',
       }},
       { selector: 'edge', style: {
-          'width': 1,
-          'line-color': '#333a48',
-          'target-arrow-color': '#333a48',
+          'width': 1.1,
+          'line-color': '#c9c4b8',
+          'target-arrow-color': '#c9c4b8',
           'target-arrow-shape': 'triangle',
           'arrow-scale': 0.55,
           'curve-style': 'bezier',
-          'opacity': 0.55,
+          'opacity': 0.75,
       }},
-      { selector: 'node.selected', style: { 'border-width': 3, 'border-color': '#fff' } },
-      { selector: 'node.dim', style: { 'opacity': 0.25 } },
-      { selector: 'edge.dim', style: { 'opacity': 0.08 } },
+      { selector: 'node.selected', style: { 'border-width': 3.5, 'border-color': '#2f2e2a' } },
       { selector: '.hiddenType', style: { 'display': 'none' } },
     ],
     layout: { name: 'preset' },
@@ -249,8 +307,8 @@
   function nodeToEle(n){
     return { data: {
       id: n.id, label: n.name.length > 34 ? n.name.slice(0,32)+'…' : n.name,
-      type: n.type, color: COLORS[n.type] || '#ccc',
-      size: 14 + Math.min(46, degreeOf(n.id) * 0.9),
+      type: n.type, color: COLORS[n.type] || '#999',
+      size: 16 + Math.min(46, degreeOf(n.id) * 0.9),
     }};
   }
   function edgeId(a,b,t){ return a+'__'+t+'__'+b; }
@@ -297,8 +355,8 @@
   }
 
   function expandNode(id){
-    let added = ensureNode(id);
-    (adj[id] || []).forEach(({other}) => { if (ensureNode(other)) added = true; });
+    ensureNode(id);
+    (adj[id] || []).forEach(({other}) => ensureNode(other));
     ensureEdgesFor(id);
     relayout(true);
     refreshEmptyState();
@@ -310,37 +368,59 @@
     refreshEmptyState();
   }
 
+  function selectNode(id, center){
+    expandNode(id);
+    showDetail(id);
+    if (center) {
+      cy.animate({ center: { eles: cy.getElementById(id) }, zoom: 1.1 }, { duration: 400 });
+    }
+    cy.nodes().removeClass('selected');
+    cy.getElementById(id).addClass('selected');
+  }
+
   // ---- detail panel ----
   const detailPanel = document.getElementById('detailPanel');
   function showEmptyDetail(){
-    detailPanel.innerHTML = '<h3>Dettaglio nodo</h3><div class="dempty">Clicca un nodo nel grafo per vedere le sue proprietà e i suoi collegamenti.</div>';
+    detailPanel.innerHTML = '<h3>Dettaglio</h3><div class="dempty">Clicca un pallino nel grafo per vedere di cosa si tratta.</div>';
+  }
+  function propRow(k, v){
+    return `<tr><td class="k">${escapeHtml(FRIENDLY_LABELS[k] || k)}</td><td>${linkify(escapeHtml(String(v)))}</td></tr>`;
   }
   function showDetail(id){
     const n = nodesById[id];
     if (!n) return;
-    const propsRows = Object.entries(n.props || {}).map(([k,v]) =>
-      `<tr><td class="k">${escapeHtml(k)}</td><td>${linkify(escapeHtml(String(v)))}</td></tr>`).join('');
+    const props = n.props || {};
+    const primaryKeys = PRIMARY_PROPS[n.type] || Object.keys(props);
+    const primaryRows = primaryKeys.filter(k => props[k]).map(k => propRow(k, props[k])).join('');
+    const secondaryKeys = Object.keys(props).filter(k => !primaryKeys.includes(k));
+    const secondaryRows = secondaryKeys.map(k => propRow(k, props[k])).join('');
     const neighCount = (adj[id] || []).length;
     detailPanel.innerHTML = `
-      <h3>Dettaglio nodo</h3>
+      <h3>Dettaglio</h3>
       <div class="dname">${escapeHtml(n.name)}</div>
-      <div class="dtype" style="background:${COLORS[n.type]}22; color:${COLORS[n.type]}; border:1px solid ${COLORS[n.type]}55;">${n.type}</div>
-      <table>${propsRows || ''}<tr><td class="k">Collegamenti diretti</td><td>${neighCount}</td></tr></table>
+      <div class="dtype" style="background:${COLORS[n.type]}1f; color:${COLORS[n.type]}; border:1px solid ${COLORS[n.type]}55;">${n.type}</div>
+      <table>${primaryRows}<tr><td class="k">Collegamenti diretti</td><td>${neighCount}</td></tr></table>
+      ${secondaryRows ? `<div class="dmore" id="dmoreToggle">Altri dettagli ▾</div><table id="dmoreTable" style="display:none;">${secondaryRows}</table>` : ''}
       <div class="dactions">
-        <button data-act="expand">Espandi vicini</button>
-        <button data-act="isolate">Isola</button>
+        <button data-act="expand">Mostra collegamenti</button>
+        <button data-act="isolate">Mostra solo questo</button>
       </div>`;
     detailPanel.querySelector('[data-act="expand"]').onclick = () => expandNode(id);
     detailPanel.querySelector('[data-act="isolate"]').onclick = () => isolateNode(id);
+    const moreToggle = detailPanel.querySelector('#dmoreToggle');
+    if (moreToggle) {
+      moreToggle.onclick = () => {
+        const t = detailPanel.querySelector('#dmoreTable');
+        const open = t.style.display !== 'none';
+        t.style.display = open ? 'none' : 'table';
+        moreToggle.textContent = open ? 'Altri dettagli ▾' : 'Altri dettagli ▴';
+      };
+    }
   }
   function escapeHtml(s){ return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
   function linkify(s){ return s.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener" style="color:var(--accent);word-break:break-all;">$1</a>'); }
 
-  cy.on('tap', 'node', evt => {
-    const id = evt.target.id();
-    showDetail(id);
-    expandNode(id);
-  });
+  cy.on('tap', 'node', evt => selectNode(evt.target.id(), false));
 
   // ---- search ----
   const searchBox = document.getElementById('searchBox');
@@ -358,10 +438,7 @@
         const id = el.getAttribute('data-id');
         searchResults.style.display = 'none';
         searchBox.value = '';
-        expandNode(id);
-        showDetail(id);
-        cy.animate({ center: { eles: cy.getElementById(id) }, zoom: 1.1 }, { duration: 400 });
-        cy.getElementById(id).addClass('selected');
+        selectNode(id, true);
       };
     });
   });
@@ -369,17 +446,22 @@
     if (!e.target.closest('.search-wrap')) searchResults.style.display = 'none';
   });
 
-  // ---- legend / type filter ----
-  const legend = document.getElementById('legend');
+  // ---- legend / type filter (raccolto, chiuso di default) ----
+  const legendToggle = document.getElementById('legendToggle');
+  const legendBody = document.getElementById('legendBody');
+  legendToggle.onclick = () => {
+    legendToggle.classList.toggle('open');
+    legendBody.classList.toggle('open');
+  };
   const hiddenTypes = new Set();
   const typeOrder = Object.keys(COLORS).filter(t => (raw.type_counts[t] || 0) > 0);
-  legend.innerHTML = typeOrder.map(t => `
+  legendBody.innerHTML = typeOrder.map(t => `
     <div class="legend-item" data-type="${t}">
       <span class="dot" style="background:${COLORS[t]}"></span>
       <span class="lname">${t}</span>
       <span class="lcount">${raw.type_counts[t] || 0}</span>
     </div>`).join('');
-  legend.querySelectorAll('.legend-item').forEach(el => {
+  legendBody.querySelectorAll('.legend-item').forEach(el => {
     el.onclick = () => {
       const t = el.getAttribute('data-type');
       if (hiddenTypes.has(t)) { hiddenTypes.delete(t); el.classList.remove('off'); }
@@ -394,7 +476,8 @@
   document.getElementById('btnOverview').onclick = loadOverview;
   document.getElementById('btnReset').onclick = clearAll;
 
-  refreshEmptyState();
+  // Parte già con una vista d'insieme: meno un passaggio per chi arriva per la prima volta.
+  loadOverview();
 })();
 </script>
 
