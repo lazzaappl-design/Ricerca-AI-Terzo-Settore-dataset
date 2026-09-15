@@ -235,6 +235,46 @@
   // Esempi pronti per chi non sa da dove iniziare (nomi verificati presenti nel dataset).
   const EXAMPLES = ['Italia', 'Chatbot conversazionale', 'AI generativa / LLM', 'Beneficiario finale della missione'];
 
+  // Nomi leggibili dei 17 tipi di nodo, usati nei risultati di ricerca, nel pannello dettaglio e nella legenda.
+  const TYPE_LABELS = {
+    Implementazione: 'Caso di implementazione', Organizzazione: 'Organizzazione', Paese: 'Paese',
+    TecnicaIA: 'Tecnica IA', Fornitore: 'Fornitore tecnologico', FunzioneOrganizzativa: 'Funzione organizzativa',
+    SettoreMissione: 'Settore / missione', Beneficio: 'Beneficio', Criticita: 'Criticità',
+    Programma: 'Programma di finanziamento', Fonte: 'Fonte', TipoBeneficiario: 'Tipo di beneficiario',
+    TipoSupervisioneUmana: 'Supervisione umana', Collaboratore: 'Collaboratore', ModelloIA: 'Modello IA',
+    Software: 'Software', CategoriaOrganizzativa: 'Categoria organizzativa',
+  };
+
+  // Ricerca "intelligente" ma sempre 100% statica: nessuna chiamata esterna, nessuna chiave da proteggere.
+  // Una parola come "paese" o "criticità" aggiunge punteggio ai nodi di quel tipo, cosi' una query come
+  // "chatbot in italia" trova sia il nodo Tecnica IA che il nodo Paese, senza capire davvero la frase.
+  const SYNONYMS = {
+    organizzazione: ['Organizzazione'], organizzazioni: ['Organizzazione'], ong: ['Organizzazione'],
+    onlus: ['Organizzazione'], associazione: ['Organizzazione'], fondazione: ['Organizzazione'],
+    cooperativa: ['Organizzazione'], ente: ['Organizzazione'],
+    paese: ['Paese'], paesi: ['Paese'], nazione: ['Paese'], stato: ['Paese'], stati: ['Paese'],
+    tecnica: ['TecnicaIA'], tecniche: ['TecnicaIA'], tecnologia: ['TecnicaIA'], tecnologie: ['TecnicaIA'],
+    intelligenza: ['TecnicaIA'], ia: ['TecnicaIA'],
+    fornitore: ['Fornitore'], fornitori: ['Fornitore'], vendor: ['Fornitore'],
+    funzione: ['FunzioneOrganizzativa'], funzioni: ['FunzioneOrganizzativa'],
+    settore: ['SettoreMissione'], settori: ['SettoreMissione'], missione: ['SettoreMissione'],
+    beneficio: ['Beneficio'], benefici: ['Beneficio'], vantaggio: ['Beneficio'], vantaggi: ['Beneficio'],
+    criticita: ['Criticita'], critica: ['Criticita'], problema: ['Criticita'], problemi: ['Criticita'],
+    rischio: ['Criticita'], rischi: ['Criticita'], difficolta: ['Criticita'],
+    programma: ['Programma'], programmi: ['Programma'], finanziamento: ['Programma'], bando: ['Programma'],
+    fonte: ['Fonte'], fonti: ['Fonte'],
+    beneficiario: ['TipoBeneficiario'], beneficiari: ['TipoBeneficiario'],
+    supervisione: ['TipoSupervisioneUmana'], umana: ['TipoSupervisioneUmana'], umano: ['TipoSupervisioneUmana'],
+    collaboratore: ['Collaboratore'], collaboratori: ['Collaboratore'], partner: ['Collaboratore'],
+    modello: ['ModelloIA'], modelli: ['ModelloIA'],
+    software: ['Software'],
+    categoria: ['CategoriaOrganizzativa'], categorie: ['CategoriaOrganizzativa'],
+    caso: ['Implementazione'], casi: ['Implementazione'], implementazione: ['Implementazione'],
+    implementazioni: ['Implementazione'],
+  };
+  // Confronto senza distinzione tra maiuscole/minuscole e senza accenti ("città" == "citta").
+  function norm(s){ return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+
   const nodesById = {};
   raw.nodes.forEach(n => nodesById[n.id] = n);
 
@@ -398,7 +438,7 @@
     detailPanel.innerHTML = `
       <h3>Dettaglio</h3>
       <div class="dname">${escapeHtml(n.name)}</div>
-      <div class="dtype" style="background:${COLORS[n.type]}1f; color:${COLORS[n.type]}; border:1px solid ${COLORS[n.type]}55;">${n.type}</div>
+      <div class="dtype" style="background:${COLORS[n.type]}1f; color:${COLORS[n.type]}; border:1px solid ${COLORS[n.type]}55;">${TYPE_LABELS[n.type] || n.type}</div>
       <table>${primaryRows}<tr><td class="k">Collegamenti diretti</td><td>${neighCount}</td></tr></table>
       ${secondaryRows ? `<div class="dmore" id="dmoreToggle">Altri dettagli ▾</div><table id="dmoreTable" style="display:none;">${secondaryRows}</table>` : ''}
       <div class="dactions">
@@ -426,12 +466,27 @@
   const searchBox = document.getElementById('searchBox');
   const searchResults = document.getElementById('searchResults');
   searchBox.addEventListener('input', () => {
-    const q = searchBox.value.trim().toLowerCase();
-    if (q.length < 2) { searchResults.style.display = 'none'; return; }
-    const matches = raw.nodes.filter(n => n.name.toLowerCase().includes(q)).slice(0, 20);
-    if (!matches.length) { searchResults.innerHTML = '<div class="res">Nessun risultato</div>'; searchResults.style.display='block'; return; }
+    const qRaw = searchBox.value.trim();
+    if (qRaw.length < 2) { searchResults.style.display = 'none'; return; }
+    const qNorm = norm(qRaw);
+    const tokens = qNorm.split(/\s+/).filter(Boolean);
+    const scored = [];
+    for (const n of raw.nodes) {
+      const nameNorm = norm(n.name);
+      let score = 0;
+      if (nameNorm.includes(qNorm)) score += 5;
+      for (const tok of tokens) {
+        if (tok.length >= 3 && nameNorm.includes(tok)) score += 2;
+        const wantedTypes = SYNONYMS[tok];
+        if (wantedTypes && wantedTypes.includes(n.type)) score += 3;
+      }
+      if (score > 0) scored.push({ n, score });
+    }
+    scored.sort((a, b) => b.score - a.score || a.n.name.localeCompare(b.n.name));
+    const matches = scored.slice(0, 20).map(s => s.n);
+    if (!matches.length) { searchResults.innerHTML = '<div class="res">Nessun risultato — prova con un altro termine, o con "paese", "organizzazione", "tecnica"...</div>'; searchResults.style.display='block'; return; }
     searchResults.innerHTML = matches.map(n =>
-      `<div class="res" data-id="${n.id}"><span>${escapeHtml(n.name)}</span><span class="t">${n.type}</span></div>`).join('');
+      `<div class="res" data-id="${n.id}"><span>${escapeHtml(n.name)}</span><span class="t">${TYPE_LABELS[n.type] || n.type}</span></div>`).join('');
     searchResults.style.display = 'block';
     searchResults.querySelectorAll('.res[data-id]').forEach(el => {
       el.onclick = () => {
@@ -458,7 +513,7 @@
   legendBody.innerHTML = typeOrder.map(t => `
     <div class="legend-item" data-type="${t}">
       <span class="dot" style="background:${COLORS[t]}"></span>
-      <span class="lname">${t}</span>
+      <span class="lname">${TYPE_LABELS[t] || t}</span>
       <span class="lcount">${raw.type_counts[t] || 0}</span>
     </div>`).join('');
   legendBody.querySelectorAll('.legend-item').forEach(el => {
