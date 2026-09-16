@@ -2,7 +2,7 @@
 
 ## Versione 1 (più lunga, con i findings)
 
-Negli ultimi mesi ho costruito, caso per caso, un dataset di 407 implementazioni verificate di intelligenza artificiale in organizzazioni del Terzo Settore nel mondo — ONG, non-profit, fondazioni, cooperative sociali.
+Negli ultimi mesi ho costruito, caso per caso, un dataset di 407 casi documentati di adozione dell'intelligenza artificiale in organizzazioni del Terzo Settore nel mondo — ONG, non-profit, fondazioni, cooperative sociali (non tutti i casi sono ugualmente verificabili né già operativi: metodologia e limiti nel post e nel repository).
 
 Non è un sondaggio né una stima: ogni caso è verificato contro una fonte primaria (sito ufficiale, case study del fornitore tecnologico con organizzazione nominata, giornalismo indipendente) prima di essere incluso. I criteri di esclusione sono altrettanto rigorosi: fuori le iniziative di sola "alfabetizzazione IA" senza uso operativo, fuori gli enti pubblici senza un partner del Terzo Settore chiaramente nominato, fuori le dichiarazioni di intenti senza evidenza d'uso reale.
 
@@ -25,7 +25,7 @@ Se lavori in un ente del Terzo Settore e stai valutando un progetto di IA, il da
 
 ## Versione 2 (più breve, diretta)
 
-407 casi verificati di adozione dell'IA nel Terzo Settore globale, uno per uno, con fonte primaria citata per ciascuno. Non un sondaggio: un dataset costruito a mano, con criteri di inclusione/esclusione rigorosi e trasparenti.
+407 casi documentati di adozione dell'IA nel Terzo Settore globale, uno per uno, con fonte primaria citata per ciascuno e livello di verificabilità dichiarato esplicitamente. Non un sondaggio: un dataset costruito a mano, con criteri di inclusione/esclusione rigorosi e trasparenti.
 
 Il finding che mi ha sorpreso di più: la supervisione umana non sparisce quando l'IA è più integrata nei processi — cambia forma, da "intervengo se serve" a "resto dentro il processo". E l'uso "a doppio uso" (missione + efficienza interna insieme) è quasi grande quanto l'uso rivolto solo ai beneficiari.
 

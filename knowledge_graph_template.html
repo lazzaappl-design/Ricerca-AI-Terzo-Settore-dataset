@@ -231,18 +231,23 @@
 
   // Etichette leggibili per le proprietà tecniche del corpus.
   const FRIENDLY_LABELS = {
-    Anno: 'Anno', Stato: 'Stato', Fonte_qualificata: 'Fonte',
+    Anno: 'Anno (testo originale)', Stato: 'Stato (testo originale)', Fonte_qualificata: 'Fonte',
+    Stato_categoria: 'Stato (categoria)', KPI_tipo: 'Tipo di KPI',
+    Anno_implementazione_effettiva: 'Anno di implementazione', Anno_annuncio_o_selezione: 'Anno di annuncio/selezione grant',
+    Anno_fondazione_organizzazione: 'Anno di fondazione organizzazione',
     Livello_integrazione: 'Livello di integrazione', KPI: 'KPI',
     Tempo_risparmiato: 'Tempo risparmiato', ROI: 'ROI',
     Livello_prova: 'Livello di evidenza', Grado_completezza: 'Completezza del caso',
-    Grado_verificabilita: 'Verificabilità', Livello_confidenza: 'Livello di confidenza',
+    Grado_verificabilita: 'Verificabilità (testo originale)', Grado_verificabilita_normalizzato: 'Verificabilità',
+    Grado_verificabilita_nota: 'Nota sulla verificabilità',
+    Livello_confidenza: 'Livello di confidenza (testo originale)', Livello_confidenza_normalizzato: 'Livello di confidenza',
     ID_caso: 'ID caso', Tipo_organizzazione: 'Tipo di organizzazione',
     Status_legale: 'Status legale', Dimensione: 'Dimensione',
     Dimensione_dettaglio: 'Dimensione (dettaglio)', N_dipendenti: 'N. dipendenti', Fatturato: 'Fatturato',
   };
   // Solo i campi più rilevanti sono mostrati subito; il resto va sotto "Altri dettagli".
   const PRIMARY_PROPS = {
-    Implementazione: ['Anno', 'Stato', 'Fonte_qualificata'],
+    Implementazione: ['Anno_implementazione_effettiva', 'Stato_categoria', 'KPI_tipo', 'Fonte_qualificata'],
     Organizzazione: ['Tipo_organizzazione', 'Dimensione'],
   };
   // Esempi pronti per chi non sa da dove iniziare (nomi verificati presenti nel dataset).

@@ -1,7 +1,7 @@
 # Schema del grafo — Ricerca AI Terzo Settore
 
 Data costruzione: 2026-08-20 — v2 italiano + TipoBeneficiario 2026-08-24 — v3 TipoBeneficiario a 3 livelli 2026-08-24 — **v4: gap-analysis pre-osservatorio pubblico, 2026-08-24 (Dimensione/N_dipendenti/Fatturato, Fonte_qualificata/Fallimenti, Collaboratore, TipoSupervisioneUmana)**
-Fonte: `corpus_working_389rec_2026-08-20.csv` (389 unità di analisi, master empirico invariato)
+Fonte: `corpus_working_407rec_2026-09-16.csv` (389 unità di analisi, master empirico invariato)
 Output: `knowledge_layer/nodes/*.csv` (17 file) + `knowledge_layer/relationships/relationships.csv` (1 file, 6.098 righe)
 
 Il nodo centrale è **Implementazione**: tutte le informazioni empiriche (tecnologia, processo, beneficio, criticità, fonte, Paese) sono collegate all'Implementazione, non trasformate in relazioni dirette tra concetti generali (es. non si crea "ChatGPT -> PRODUCE -> Risparmio di tempo"; si crea "Implementazione -> USA_SOFTWARE -> ChatGPT" e "Implementazione -> RIPORTA_BENEFICIO -> Risparmio di tempo" separatamente, così il beneficio resta ancorato al caso specifico che lo documenta).
@@ -188,4 +188,4 @@ Script pronto: `knowledge_layer/import.cypher` (Cypher standard, nessuna dipende
 
 ## Casi che richiedono revisione umana
 
-Non gestiti con un nuovo foglio `MANUAL_REVIEW`: si riusa `DATA_QUALITY_ISSUES` dentro `corpus_working_389rec_2026-08-20.xlsx` (stesso principio di non moltiplicare fogli/file). I 254 record con almeno un tag `NON_CLASSIFICATO` in Funzione/Settore/Beneficio/Criticità (già segnalati in `PROCESS_BENEFIT_CRIT_AUDIT`) semplicemente non generano l'edge corrispondente — nessuna azione bloccante per il caricamento in Neo4j. Tipo_beneficiario_Tags non ha più casi NON_CLASSIFICATO (vedi sezione dedicata sopra).
+Non gestiti con un nuovo foglio `MANUAL_REVIEW`: si riusa `DATA_QUALITY_ISSUES` dentro `corpus_working_407rec_2026-09-16.xlsx` (stesso principio di non moltiplicare fogli/file). I 254 record con almeno un tag `NON_CLASSIFICATO` in Funzione/Settore/Beneficio/Criticità (già segnalati in `PROCESS_BENEFIT_CRIT_AUDIT`) semplicemente non generano l'edge corrispondente — nessuna azione bloccante per il caricamento in Neo4j. Tipo_beneficiario_Tags non ha più casi NON_CLASSIFICATO (vedi sezione dedicata sopra).

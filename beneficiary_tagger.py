@@ -188,7 +188,7 @@ def classify_record(r):
 
 if __name__ == "__main__":
     import csv, collections
-    with open('/sessions/wonderful-focused-faraday/mnt/Ricerca AI Terzo Settore/database_casi.csv', newline='', encoding='utf-8') as f:
+    with open('database_casi.csv', newline='', encoding='utf-8') as f:
         rows = list(csv.DictReader(f))
     results = [classify_record(r) for r in rows]
     counts = collections.Counter()

@@ -37,7 +37,11 @@ BENEFIT_TAGS = [
     ("Risparmio di tempo / maggiore velocità", r"tempo risparmiat|risparmi[a-z]*\s+(fino a\s+)?[\d.,]*\s*(ore|minuti|giorni|tempo)|pi[uù] (rapid|veloc)|riduzione del tempo|tempo di (attesa|onboarding|risposta|preparazione|conversione|documentazione)[^.;]{0,30}ridott|ridott[ao] (da|del)[^.;]{0,25}(ore|minuti|giorni|settiman|mes[ei]|anno)|da (ore|giorni|settiman|un anno|circa)[^.;]{0,20}a (minuti|ore|mes[ei]|sei mesi)|velocit[aà] (di|aument|quasi)"),
     ("Riduzione di costi/sforzo operativo", r"riduzione dei costi|risparmio (stimato|economico)|costo per acquisizione|riduzione del costo|meno costos|riduzione (stimata )?del [\d-]+% (dello sforzo|del)|sforzo[^.;]{0,20}ridott"),
     ("Impatto economico/finanziario quantificato", r"[\$€]\s?[\d.,]+|[\d.,]+\s?(\$|€|euro|dollari)|budget|sovvenzion|fondi (raccolti|erogati|distribuiti)"),
-    ("Aumento di scala/copertura/volume di utilizzo", r"\boltre [\d.,]+|pi[uù] di [\d.,]+|quasi [\d.,]+|\b[\d][\d.,]{2,}\s*(utenti|persone|famiglie|rifugiati|volontari|casi|richieste|interazioni|contatti|conversazioni|colloqui|documenti|petizioni|donatori|studenti|abbinamenti|donne|messaggi|sussidi|Paesi|scuole|partecipanti|beneficiari|soggetti|SMS|aree protette)|copertura di|scalat[oa]|espans|dispiegat[oa] (da|in)"),
+    # Ampliato 2026-09-16 (D10): la regola originale richiedeva il numero attaccato al sostantivo e
+    # quindi non riconosceva "122 nuovi utenti", "324 capi d'imputazione". Ora ammette una parola in mezzo.
+    ("Aumento di scala/copertura/volume di utilizzo", r"\boltre [\d.,]+|pi[uù] di [\d.,]+|quasi [\d.,]+|"
+     r"\b[\d][\d.,]{2,} \w{0,12} ?(utenti|persone|famiglie|rifugiati|volontari|casi|richieste|interazioni|contatti|conversazioni|colloqui|documenti|petizioni|donatori|studenti|abbinamenti|donne|messaggi|sussidi|Paesi|scuole|partecipanti|beneficiari|soggetti|SMS|aree protette|imputazioni|domande)|"
+     r"copertura di|scalat[oa]|espans|dispiegat[oa] (da|in)"),
     ("Miglioramento accuratezza/qualità", r"accuratezza|precisione|qualit[aà] (dei dati|del|migliorat)|affidabilit[aà]|livello di confidenza"),
     ("Aumento entrate/donazioni/ROI", r"\broi\b|incremento[^.;]{0,15}ricav|donazioni|tasso di risposta|tasso di conversione|brand lift|notoriet[aà] del marchio"),
     ("Disponibilità/accessibilità H24", r"24/7|24 ore su 24|accesso (immediato|istantaneo|rapido e trasparente|gratuito e anonimo)|nessun messaggio[^.;]{0,20}senza risposta"),
@@ -46,11 +50,24 @@ BENEFIT_TAGS = [
     ("Riduzione stress/carico di lavoro personale", r"riduzione dello stress|carico di lavoro|liberat[ei] per la vita associativa|energie liberate|equivalente al tempo che \d+ persone"),
     ("Beneficio dichiarato ma non quantificato", r"non quantificat|dichiarat[oa],? non|dettaglio quantitativo non disponibile|nessun (dato|beneficio) quantificat"),
     ("Miglioramento esiti sociali/impatto diretto sui beneficiari", r"insicurezza alimentare ridotta|reddito[^.;]{0,15}raddoppiat|occupazione|effetto significativo su|impatto anno su anno|riduzione del danno"),
+    # Aggiunta 2026-09-16 (D10): casi in cui il beneficio documentato e' un obiettivo dichiarato dalla
+    # fonte, non un risultato misurato (tipicamente progetti selezionati in un bando e non ancora
+    # operativi). Agganciata alla sola formula "obiettivo dichiarato" usata dal progetto, per evitare
+    # falsi positivi. NON confondere con la vittoria del bando in se', che non e' un beneficio
+    # dell'implementazione e resta deliberatamente non classificata.
+    ("Beneficio futuro dichiarato (obiettivo non ancora misurato)", r"obiettivo dichiarat"),
 ]
 
 CRIT_TAGS = [
     ("Nessuna criticità/limite documentato (gap di fonte)", r"non riporta|non specificat|non dettagliat|non document|non fornisc|dettagli limitat|nessun dato|nessuna criticit|dati (quantitativi|indipendenti)[^.;]{0,20}(non disponibil|assent)|le fonti (disponibili )?(non|sono)|non è (possibile|disponibile)"),
-    ("Limiti della fonte / mancanza di valutazione indipendente", r"fonte (esclusivamente |unicamente |principale )?(è )?(un case study )?vendor|fonte unica|mancano valutazioni indipendenti|senza conferma (diretta|indipendente)|non pi[uù] raggiungibile|comunicazioni dell'organizzazione stessa|comunicat[oi] (ufficial[ei] )?(dell'organizzazione|di google)"),
+    # Ampliato 2026-09-16 (decisione D10): le regole originali cercavano la parola inglese "vendor" e
+    # la formula "mancano valutazioni indipendenti", mentre il corpus usa correntemente "fornitore
+    # tecnologico", "mancano fonti indipendenti", "comunicato stampa ufficiale". Vedi decisioni_fase0.md.
+    ("Limiti della fonte / mancanza di valutazione indipendente", r"fonte (esclusivamente |unicamente |principale )?(è )?(un case study )?vendor|fonte unica|"
+     r"mancano valutazioni indipendenti|mancano fonti indipendenti|senza conferma (diretta|indipendente)|senza fonti indipendenti|"
+     r"non pi[uù] raggiungibile|comunicazioni dell'organizzazione stessa|comunicat[oi] (ufficial[ei] )?(dell'organizzazione|di google)|"
+     r"fornitore tecnologico|comunicato stampa (del|istituzionale|ufficiale)|case study (ufficiale )?(pubblicato )?(dal|del) fornitore|"
+     r"senza (una )?(copertura giornalistica|valutazione) indipendente|senza (uno )?studio (indipendente|accademico)"),
     ("Necessità di supervisione/controllo umano (NIST: Accountable & Transparent)", r"supervision[ei] uman|controllo uman|human[- ]in[- ]the[- ]loop|revisione uman|escalation (a )?operatori|i bot non sono la soluzione"),
     ("Bias/qualità dei dati (NIST: Fair, bias managed)", r"\bbias\b|dati distort|dati difettos|qualit[aà][^.;]{0,15}dati|dati (di )?scarsa qualit|pulizia dei dati"),
     ("Privacy/sicurezza dei dati (NIST: Privacy-Enhanced/Secure)", r"privacy|sicurezza dei dati|protezione dei dati|dati sensibil"),
@@ -63,6 +80,12 @@ CRIT_TAGS = [
     ("Alfabetizzazione digitale/adozione da parte degli utenti", r"alfabetizzazione digitale|adattamento[^.;]{0,20}utenti|competenze digitali degli utenti"),
     ("Efficacia/risultati limitati o modesti", r"risultat[oi][^.;]{0,15}modest|effetti[^.;]{0,15}modest|impatt[oi][^.;]{0,15}modest|efficacia limitat|base di prova[^.;]{0,20}limitat"),
     ("Necessità di calibrazione/contesto locale", r"calibrazione|contesto locale|adattamento (al|del) contesto"),
+    # Aggiunta 2026-09-16 (decisione D10): diversi casi dichiarano esplicitamente che il dato riportato
+    # e' un obiettivo dichiarato ("anticipated impact") e non un risultato misurato. E' un limite
+    # interpretativo del dato, quindi una criticita' a pieno titolo, e non era coperto da nessuna categoria.
+    ("Dato non ancora misurato/proiezione dichiarata ('anticipated impact')",
+     r"obiettivo dichiarato \('anticipated impact'\)|rappresenta(no)? (un |degli )?obiettiv[oi] dichiarat|"
+     r"non ancora un risultato misurato|proiezion[ei] (attes|calcolat)|non ancora un impatto operativo"),
 ]
 
 PROC_TAGS = [
@@ -81,9 +104,16 @@ PROC_TAGS = [
     ("Matching/abbinamento beneficiari-risorse", r"abbinamento|matching|allocazione (delle )?risorse|collocamento"),
     ("Servizi legali", r"legal|atti legali|consulenza legale|revisione di casi"),
     ("Traduzione/interpretariato", r"traduzione|interpretariato"),
-    ("Accessibilità/produzione contenuti accessibili", r"content[i]? accessibil|document[i]? accessibil"),
+    ("Accessibilità/produzione contenuti accessibili", r"content\w* accessibil|document\w* accessibil"),
     ("Gestione casi (case management)", r"gestione dei casi|case management|targeting dei beneficiari|valutazione dei bisogni"),
     ("Governance/gestione IA interna", r"governance ia|governance dei dati|gestione dei dati"),
+    # Aggiunta 2026-09-16: la maggior parte dei casi NON_CLASSIFICATO del corpus a 407 record
+    # erano servizi erogati direttamente a un beneficiario/utente finale, non coperti da
+    # nessuna categoria sopra (pensate per funzioni di back-office). Vedi diagnosi_fase0.md.
+    ("Erogazione diretta", r"erogazione di (servizi|informazioni|cure|percorsi|risorse|coaching|supporto|contenuti|sessioni)|"
+                           r"screening|triage|diagnos|accoglienza e screening|intake|dispatch delle emergenze|"
+                           r"allerta precoce|indirizzamento|caregiver|cura domiciliare|continuum di cura|"
+                           r"identificazione delle vittime|prevenzione e risposta alla tratta"),
 ]
 
 SETTORE_TAGS = [

@@ -78,7 +78,7 @@ import re
 import os
 import collections
 
-CORPUS_CSV = "corpus_working_389rec_2026-08-20.csv"  # aggiornare al file corrente
+CORPUS_CSV = "corpus_working_407rec_2026-09-16.csv"  # aggiornare al file corrente
 OUT_DIR = "knowledge_layer/"
 NODES_DIR = OUT_DIR + "nodes/"
 RELS_DIR = OUT_DIR + "relationships/"
@@ -196,21 +196,31 @@ def main():
                 break
 
     # ---------- 1) Implementazione ----------
-    impl_fields = ["id", "label", "nome", "Anno", "Stato", "Problema", "Obiettivo", "Sottoprocesso",
-                   "Workflow_dettagliato", "Input", "Output", "Ruolo_umano", "Livello_integrazione", "KPI",
+    impl_fields = ["id", "label", "nome", "Anno", "Stato", "Stato_categoria", "Problema", "Obiettivo", "Sottoprocesso",
+                   "Workflow_dettagliato", "Input", "Output", "Ruolo_umano", "Livello_integrazione", "KPI", "KPI_tipo",
                    "Tempo_risparmiato", "ROI", "Livello_prova", "Grado_completezza", "Grado_verificabilita",
-                   "Livello_confidenza", "Osservazioni", "Fonte_qualificata", "Fallimenti"]
+                   "Grado_verificabilita_normalizzato", "Grado_verificabilita_nota",
+                   "Livello_confidenza", "Livello_confidenza_normalizzato", "Osservazioni", "Fonte_qualificata", "Fallimenti",
+                   "Anno_implementazione_effettiva", "Anno_annuncio_o_selezione", "Anno_fondazione_organizzazione"]
     impl_rows = [{
         "id": r['ID_caso'], "label": "Implementazione", "nome": r['ID_caso'],
         "Anno": r['Anno_implementazione'], "Stato": r['Stato_implementazione'],
+        "Stato_categoria": r.get('Stato_categoria', ''),
         "Problema": r['Problema_affrontato'], "Obiettivo": r['Obiettivo_implementazione'],
         "Sottoprocesso": r['Sotto_processo'], "Workflow_dettagliato": r['Workflow_dettagliato'],
         "Input": r['Input'], "Output": r['Output'], "Ruolo_umano": r['Ruolo_operatore_umano'],
-        "Livello_integrazione": r['Livello_integrazione'], "KPI": r['KPI'],
+        "Livello_integrazione": r['Livello_integrazione'], "KPI": r['KPI'], "KPI_tipo": r.get('KPI_tipo', ''),
         "Tempo_risparmiato": r['Tempo_risparmiato'], "ROI": r['ROI'], "Livello_prova": r['Livello_prova'],
         "Grado_completezza": r['Grado_completezza'], "Grado_verificabilita": r['Grado_verificabilita'],
-        "Livello_confidenza": r['Livello_confidenza'], "Osservazioni": r['Osservazioni'],
+        "Grado_verificabilita_normalizzato": r.get('Grado_verificabilita_normalizzato', ''),
+        "Grado_verificabilita_nota": r.get('Grado_verificabilita_nota', ''),
+        "Livello_confidenza": r['Livello_confidenza'],
+        "Livello_confidenza_normalizzato": r.get('Livello_confidenza_normalizzato', ''),
+        "Osservazioni": r['Osservazioni'],
         "Fonte_qualificata": r.get('Fonte_qualificata', ''), "Fallimenti": r.get('Fallimenti', ''),
+        "Anno_implementazione_effettiva": r.get('Anno_implementazione_effettiva', ''),
+        "Anno_annuncio_o_selezione": r.get('Anno_annuncio_o_selezione', ''),
+        "Anno_fondazione_organizzazione": r.get('Anno_fondazione_organizzazione', ''),
     } for r in rows]
     _write(NODES_DIR + 'implementazioni.csv', impl_fields, impl_rows)
 
@@ -241,10 +251,16 @@ def main():
     country_id_map = {name: f"COU-{i+1:03d}" for i, name in enumerate(sorted(country_names))}
     _write(NODES_DIR + 'paesi.csv', ["id", "label", "nome"],
            [{"id": cid, "label": "Paese", "nome": name} for name, cid in country_id_map.items()])
+    # Correzione 2026-09-16 (fase 0c): HA_SEDE_IN veniva emessa una volta per ogni implementazione
+    # dell'organizzazione, generando relazioni duplicate (15 duplicati su 6.500) e gonfiando ogni
+    # conteggio basato sulla sede. La sede e' una proprieta' dell'organizzazione, non della singola
+    # implementazione: si emette una sola relazione per coppia organizzazione-paese.
+    sedi_gia_emesse = set()
     for r in rows:
         for c in r['Organization_Country'].split(';'):
             c = c.strip()
-            if c and c != GLOBAL_SENTINEL:
+            if c and c != GLOBAL_SENTINEL and (r['Organization_ID'], c) not in sedi_gia_emesse:
+                sedi_gia_emesse.add((r['Organization_ID'], c))
                 add_rel(r['Organization_ID'], "Organizzazione", "HA_SEDE_IN", country_id_map[c], "Paese", r['ID_caso'], "ALTA", "Organization_Country", c)
         for c in r['Implementation_Country'].split(';'):
             c = c.strip()

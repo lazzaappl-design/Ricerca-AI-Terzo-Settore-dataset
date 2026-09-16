@@ -11,9 +11,13 @@ database_ai_terzo_settore.xlsx
 corpus_freeze_391rec_2026-08-20.csv
 corpus_freeze_391rec_2026-08-20.json
 corpus_freeze_391rec_2026-08-20.xlsx
-corpus_working_389rec_2026-08-20.csv
-corpus_working_389rec_2026-08-20.json
-corpus_working_389rec_2026-08-20.xlsx
+# Pattern invece di nomi espliciti: il 2026-09-16 il rinomino del corpus da
+# corpus_working_389rec_2026-08-20.* a corpus_working_407rec_2026-09-16.* aveva
+# silenziosamente disattivato questa esclusione, rendendo pubblicabile il corpus.
+# Con il pattern qualsiasi rinomino futuro resta coperto.
+corpus_working_*
+corpus_freeze_*
+database_casi.*
 corpus_audit_report.md
 multi_implementation_review.csv
 registro_esclusioni.csv
@@ -31,3 +35,16 @@ knowledge_layer/relationships/
 # Coda di revisione settimanale: candidati non ancora approvati, possono
 # contenere testo non ancora controllato per sensibilità.
 revisione_settimanale/
+
+# Cartelle di backup: contengono copie del corpus, di database_casi.csv e dei
+# nodi del knowledge_layer, tutti esclusi ai loro percorsi normali. Senza questa
+# riga verrebbero pubblicati dall'interno del backup.
+_backup_*/
+
+# Cache di Python
+__pycache__/
+*.pyc
+
+# File intermedio del tagger (non piu' prodotto dal 2026-09-16, ma se riappare
+# contiene il testo libero dei campi sorgente)
+pbc_audit.csv

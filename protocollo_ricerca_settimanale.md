@@ -38,7 +38,7 @@ Un caso valido è un'organizzazione del Terzo Settore (ONG, non-profit, fondazio
 
 ## Controllo duplicati (obbligatorio)
 
-1. Prima di redigere un candidato, cerca (grep) il nome dell'organizzazione e parole chiave distintive in `database_casi.csv` e in `corpus_working_389rec_2026-08-20.csv` per intero — non solo nei candidati proposti nelle settimane precedenti.
+1. Prima di redigere un candidato, cerca (grep) il nome dell'organizzazione e parole chiave distintive in `database_casi.csv` e in `corpus_working_407rec_2026-09-16.csv` per intero — non solo nei candidati proposti nelle settimane precedenti.
 2. Controlla anche i file già presenti in `revisione_settimanale/` (candidati proposti nei cicli automatici precedenti, non ancora approvati) per non riproporre lo stesso candidato due volte.
 3. Dopo aver preparato la lista della settimana, ripeti la verifica incrociata sui nomi organizzazione.
 4. In caso di dubbio, segnala il candidato come "possibile duplicato" nelle Osservazioni invece di scartarlo silenziosamente o includerlo senza avviso.
@@ -64,14 +64,14 @@ Obiettivo indicativo: valutare 8-15 organizzazioni candidate grezze per proporne
 
 ## Cosa non fare mai
 
-- Non modificare `corpus_working_389rec_2026-08-20.*`, `database_casi.*`, la cartella `knowledge_layer/`, `osservatorio_ai_terzo_settore.html`, `registro_metodologico.md`.
+- Non modificare `corpus_working_407rec_2026-09-16.*`, `database_casi.*`, la cartella `knowledge_layer/`, `osservatorio_ai_terzo_settore.html`, `registro_metodologico.md`.
 - Non inserire candidati direttamente nel corpus pubblico o nel grafo Neo4j.
 - Non ripubblicare l'osservatorio o il repository GitHub.
 - Non abbassare i criteri di esclusione per raggiungere un numero minimo di casi.
 
 ## Classificazione completa (non solo proposta grezza)
 
-L'AI manager applica da solo tutti i criteri, comprese le classificazioni a tag multipli — l'utente non deve rifare questo lavoro caso per caso. Per ogni candidato che supera i criteri, oltre ai campi del PASSO base, compila anche i campi qui sotto così che il record sia già pronto per l'unione nel corpus pubblico (57 colonne di `corpus_working_389rec_2026-08-20.csv`), non solo una bozza.
+L'AI manager applica da solo tutti i criteri, comprese le classificazioni a tag multipli — l'utente non deve rifare questo lavoro caso per caso. Per ogni candidato che supera i criteri, oltre ai campi del PASSO base, compila anche i campi qui sotto così che il record sia già pronto per l'unione nel corpus pubblico (57 colonne di `corpus_working_407rec_2026-09-16.csv`), non solo una bozza.
 
 Regola generale per tutti i campi a tag multipli: **non inventare mai un nuovo valore di tag.** Prima di assegnare un tag, leggi il file dei nodi corrispondente in `knowledge_layer/nodes/` e scegli solo tra i valori già esistenti in quel vocabolario controllato:
 
@@ -98,10 +98,31 @@ Prima di creare una nuova entità, cerca una corrispondenza già esistente in `k
 ## Output di ogni ciclo
 
 1. `revisione_settimanale/candidati_AAAA-MM-GG.md` — elenco completo dei candidati proposti (solo quelli che superano tutti i criteri), ciascuno con tutti i campi sopra e un paragrafo di motivazione con citazione della fonte.
-2. `revisione_settimanale/candidati_AAAA-MM-GG.csv` — le **stesse 57 colonne, nello stesso ordine, di `corpus_working_389rec_2026-08-20.csv`** (usa quel file come intestazione di riferimento), una riga per candidato approvato, già pronta per essere accodata al corpus. `ID_caso` va lasciato con il prefisso provvisorio `CAND-AAAA-MM-GG-N` (mai un ID_caso definitivo: l'assegnazione dell'ID finale avviene solo in fase di merge).
+2. `revisione_settimanale/candidati_AAAA-MM-GG.csv` — le **stesse 57 colonne, nello stesso ordine, di `corpus_working_407rec_2026-09-16.csv`** (usa quel file come intestazione di riferimento), una riga per candidato approvato, già pronta per essere accodata al corpus. `ID_caso` va lasciato con il prefisso provvisorio `CAND-AAAA-MM-GG-N` (mai un ID_caso definitivo: l'assegnazione dell'ID finale avviene solo in fase di merge).
 3. Un'entry in fondo a `log_cicli_automatici.md` con: data, N organizzazioni valutate, N candidati proposti, N scartati con motivo sintetico per categoria di esclusione, eventuali attivazioni del protocollo di resilienza, eventuali possibili duplicati segnalati, eventuali nuove entità/fornitori proposti.
 4. Se zero candidati validi: crea comunque l'entry di log con "0 candidati proposti questa settimana" e il motivo. **Non descrivere mai questo esito come "saturazione"**: la ricerca via motori di ricerca pubblici non è un campionamento rappresentativo (è sistematicamente distorta verso organizzazioni con presenza web in inglese/lingue europee maggiori, capacità di comunicazione/PR, Paesi con giornalismo tech sviluppato) e zero risultati in un ciclo significa solo "non trovato con questo metodo in questo ciclo", mai "non esiste" o "il filone è esaurito". Registra invece esplicitamente quali fonti/query sono state tentate, così un ciclo futuro (anche con query in lingua locale o fonti diverse) non riparte da zero e non ripete lo stesso buco.
 
 ## Come avviene l'approvazione (una volta a settimana, non caso per caso)
 
-Il ciclo automatico non tocca mai il corpus pubblico, il grafo o l'osservatorio pubblicato: prepara solo i candidati già completamente classificati e pronti. L'utente non deve rivalutare l'inclusione/esclusione di ogni caso (l'ha già fatta l'AI manager) — deve solo dare un'approvazione complessiva del lotto settimanale con un messaggio tipo "approva il ciclo del AAAA-MM-GG". A quel punto, in una sessione interattiva, i candidati approvati vengono accodati a `database_casi.csv` e `corpus_working_389rec_2026-08-20.*` con ID_caso definitivi, si rieseguono gli script di tagging/entity-resolution già esistenti sui nuovi record, si rigenera `knowledge_layer/` con `build_knowledge_layer.py` e `observatory_data.json` con `compute_observatory.py`, e si registra il nuovo ciclo in `registro_metodologico.md`. La ripubblicazione dell'osservatorio (Lovable) e del repository GitHub resta un passo separato ed esplicito, non automatico nemmeno dopo l'approvazione del lotto.
+Il ciclo automatico non tocca mai il corpus pubblico, il grafo o l'osservatorio pubblicato: prepara solo i candidati già completamente classificati e pronti. L'utente non deve rivalutare l'inclusione/esclusione di ogni caso (l'ha già fatta l'AI manager) — deve solo dare un'approvazione complessiva del lotto settimanale con un messaggio tipo "approva il ciclo del AAAA-MM-GG". A quel punto, in una sessione interattiva, i candidati approvati vengono accodati a `database_casi.csv` e `corpus_working_407rec_2026-09-16.*` con ID_caso definitivi, si rieseguono gli script di tagging/entity-resolution già esistenti sui nuovi record, si eseguono nell'ordine gli script della sequenza qui sotto, e si registra il nuovo ciclo in `registro_metodologico.md`. La ripubblicazione dell'osservatorio (Lovable) e del repository GitHub resta un passo separato ed esplicito, non automatico nemmeno dopo l'approvazione del lotto.
+
+
+## Sequenza della pipeline (aggiornata il 2026-09-16, fase 0c)
+
+Va eseguita in quest'ordine dalla cartella del progetto, dopo aver accodato i nuovi casi al corpus e **dopo aver fatto una copia di sicurezza del corpus**. L'ordine non è arbitrario: ogni script presuppone l'output del precedente.
+
+```
+python3 applica_tag_al_corpus.py                  # regole di pbc_tagger.py -> 4 colonne di tag del corpus
+python3 riclassifica_funzione_organizzativa.py    # recupera i NON_CLASSIFICATO della funzione organizzativa
+python3 normalizza_corpus.py                      # 9 colonne derivate: stato, anni, confidenza, verificabilità, KPI
+python3 build_knowledge_layer.py                  # nodi e relazioni del knowledge graph
+python3 build_graph_export.py                     # graph_data.json + knowledge_graph.html
+python3 compute_observatory.py                    # observatory_data.json
+python3 build_observatory_export.py               # osservatorio_ai_terzo_settore.html dal template
+```
+
+Tutti gli script sono idempotenti: rieseguirli senza modificare le regole lascia i file identici. Se un'esecuzione produce cambiamenti inattesi, è un segnale che le regole e i dati si sono separati — è esattamente il guasto che si era verificato prima del 2026-09-16, quando i tag venivano incollati a mano da `pbc_audit.csv`.
+
+**Perché non si modificano le pagine generate.** `knowledge_graph.html` e `osservatorio_ai_terzo_settore.html` sono prodotti dagli script a partire dai dati e dai rispettivi template. Qualsiasi modifica fatta direttamente su di essi viene persa alla prima rigenerazione: le correzioni ai testi vanno fatte in `knowledge_graph_template.html` e `osservatorio_template.html`.
+
+**Controllo obbligatorio prima di ogni pubblicazione.** Cinque affermazioni numeriche dentro `osservatorio_template.html` sono scritte a mano e non vengono ricalcolate dalla pipeline: la quota di casi non classificabili per dimensione, la quota di paesi di implementazione statunitensi, la quota di organizzazioni classificate genericamente come ONG, la disponibilità di N_dipendenti e Fatturato, e il numero di casi nel sottotitolo. Vanno riverificate a mano a ogni congelamento di una versione pubblica (decisione D11, `decisioni_fase0.md`). È una scelta consapevole di non automatizzarle: il prezzo è questo controllo.

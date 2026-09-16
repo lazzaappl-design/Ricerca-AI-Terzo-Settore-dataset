@@ -282,9 +282,27 @@
  "combinazioni_frequenti": [
   {
    "categoria": "ONG / organizzazione non governativa",
+   "funzione": "Erogazione diretta",
+   "tecnica": "AI generativa / LLM",
+   "n": 27
+  },
+  {
+   "categoria": "ONG / organizzazione non governativa",
+   "funzione": "Erogazione diretta",
+   "tecnica": "Chatbot conversazionale",
+   "n": 24
+  },
+  {
+   "categoria": "ONG / organizzazione non governativa",
    "funzione": "Monitoraggio e valutazione (M&E)",
    "tecnica": "Computer vision / analisi immagini",
    "n": 21
+  },
+  {
+   "categoria": "ONG / organizzazione non governativa",
+   "funzione": "Analisi dati/supporto decisionale",
+   "tecnica": "Machine learning predittivo",
+   "n": 18
   },
   {
    "categoria": "ONG / organizzazione non governativa",
@@ -295,7 +313,7 @@
   {
    "categoria": "ONG / organizzazione non governativa",
    "funzione": "Analisi dati/supporto decisionale",
-   "tecnica": "Machine learning predittivo",
+   "tecnica": "Machine learning (generico)",
    "n": 17
   },
   {
@@ -303,6 +321,12 @@
    "funzione": "Monitoraggio e valutazione (M&E)",
    "tecnica": "Machine learning predittivo",
    "n": 17
+  },
+  {
+   "categoria": "ONG / organizzazione non governativa",
+   "funzione": "Erogazione diretta",
+   "tecnica": "IA generica / non specificata",
+   "n": 16
   },
   {
    "categoria": "ONG / organizzazione non governativa",
@@ -315,30 +339,6 @@
    "funzione": "Formazione/capacity building",
    "tecnica": "Chatbot conversazionale",
    "n": 12
-  },
-  {
-   "categoria": "ONG / organizzazione non governativa",
-   "funzione": "Monitoraggio e valutazione (M&E)",
-   "tecnica": "Machine learning (generico)",
-   "n": 12
-  },
-  {
-   "categoria": "ONG / organizzazione non governativa",
-   "funzione": "Analisi dati/supporto decisionale",
-   "tecnica": "Machine learning (generico)",
-   "n": 9
-  },
-  {
-   "categoria": "ONG / organizzazione non governativa",
-   "funzione": "Assistenza diretta/supporto psicologico/helpline",
-   "tecnica": "AI generativa / LLM",
-   "n": 9
-  },
-  {
-   "categoria": "ONG / organizzazione non governativa",
-   "funzione": "Matching/abbinamento beneficiari-risorse",
-   "tecnica": "Sistema di raccomandazione / matching",
-   "n": 9
   }
  ],
  "programmi_ricorrenti": [
@@ -502,8 +502,8 @@
  "settori_missione_diffusi": [
   {
    "nome": "Salute/sanità",
-   "n": 109,
-   "pct": 26.8
+   "n": 111,
+   "pct": 27.3
   },
   {
    "nome": "Ambiente/conservazione natura",
@@ -517,8 +517,8 @@
   },
   {
    "nome": "Istruzione/formazione",
-   "n": 51,
-   "pct": 12.5
+   "n": 52,
+   "pct": 12.8
   },
   {
    "nome": "Sviluppo economico/finanza inclusiva/lavoro",
@@ -532,8 +532,8 @@
   },
   {
    "nome": "Diritti umani/giustizia/legale",
-   "n": 37,
-   "pct": 9.1
+   "n": 36,
+   "pct": 8.8
   },
   {
    "nome": "Violenza di genere/protezione vulnerabili",

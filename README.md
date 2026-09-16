@@ -1,6 +1,6 @@
 # Ricerca AI Terzo Settore
 
-Un osservatorio di ricerca sull'adozione dell'intelligenza artificiale nelle organizzazioni del Terzo Settore (ONG, non-profit, fondazioni, cooperative sociali) a livello globale: 407 casi verificati manualmente, uno per uno, con fonte primaria citata per ciascuno.
+Un osservatorio di ricerca sull'adozione dell'intelligenza artificiale nelle organizzazioni del Terzo Settore (ONG, non-profit, fondazioni, cooperative sociali) a livello globale: 407 casi documentati e ricercati uno per uno, ciascuno con fonte primaria citata e livello di verificabilità dichiarato esplicitamente (non tutti i casi sono ugualmente verificabili né già operativi — vedi "Come è costruito il corpus" più sotto e `registro_metodologico.md`).
 
 **Osservatorio pubblico (14 analisi guidate, grafici):** https://osservatorio-ai-terzo-settore.lovable.app
 
@@ -17,7 +17,7 @@ Prima di leggere qualunque numero: questo non è un censimento e non stima la pr
 - `knowledge_graph.html` / `graph_data.json` — versione pubblica e statica dello stesso knowledge graph, esplorabile nel browser senza bisogno di Neo4j: cerca un'organizzazione, un paese o una tecnica e clicca per espandere i collegamenti diretti. `graph_data.json` esclude gli stessi campi di testo libero dell'Implementazione non pubblicati altrove (vedi sotto); generato da `build_graph_export.py`.
 - `registro_metodologico.md` — il registro completo, ciclo per ciclo, di come il corpus è stato costruito: criteri di inclusione/esclusione applicati, casi scartati e perché, correzioni metodologiche in corsa, e una nota esplicita sui limiti del campione (non è un censimento, e l'assenza di nuove categorie di tecnica in un ciclo non è mai stata interpretata come segnale di saturazione della varietà reale finché continuavano a emergere nuove organizzazioni).
 - `protocollo_ricerca_settimanale.md` — il protocollo che guida i cicli di ricerca ricorrenti che continuano ad ampliare il corpus.
-- Script Python (`*_tagger.py`, `*_parser.py`, `build_knowledge_layer.py`, `compute_observatory.py`, `build_graph_export.py`) — la pipeline riusabile con cui i dati grezzi vengono classificati, taggati e trasformati nel knowledge graph e negli aggregati dell'osservatorio.
+- Script Python (`*_tagger.py`, `*_parser.py`, `applica_tag_al_corpus.py`, `riclassifica_funzione_organizzativa.py`, `normalizza_corpus.py`, `build_knowledge_layer.py`, `compute_observatory.py`, `build_graph_export.py`, `build_observatory_export.py` — la sequenza di esecuzione è documentata in `protocollo_ricerca_settimanale.md`) — la pipeline riusabile con cui i dati grezzi vengono classificati, taggati e trasformati nel knowledge graph e negli aggregati dell'osservatorio.
 
 ## Cosa NON c'è (per scelta, non per dimenticanza)
 
@@ -26,6 +26,8 @@ Il corpus grezzo (i 407 record con i campi di testo libero — problema affronta
 ## Come è costruito il corpus
 
 Ogni caso è verificato contro una fonte primaria (sito ufficiale dell'organizzazione, case study del fornitore tecnologico con organizzazione nominata, copertura giornalistica indipendente) prima di essere incluso. Vengono sistematicamente esclusi: enti pubblici o intergovernativi senza un partner del Terzo Settore chiaramente nominato, organizzazioni for-profit anche a missione sociale, iniziative di sola formazione/"AI literacy" senza adozione operativa, documenti di policy senza un caso di implementazione reale, dichiarazioni di intenti prive di evidenza d'uso. I dettagli completi, incluse le correzioni metodologiche applicate in corso d'opera, sono in `registro_metodologico.md`.
+
+**Casi selezionati da un programma di finanziamento ma non ancora operativi.** Una parte dei casi (circa il 31% del corpus) documenta organizzazioni selezionate o finanziate da un programma esterno (es. AWS Imagine Grant, Patrick J. McGovern Foundation, Google.org Accelerator, Salesforce Accelerator, IBM Sustainability/Impact Accelerator) il cui sistema IA è ancora in fase di sviluppo, non ancora pienamente operativo. Questi casi sono inclusi solo quando la fonte descrive un workflow tecnico specifico e nominato (non una semplice dichiarazione di interesse generico verso l'IA), in coerenza con il criterio di esclusione delle "dichiarazioni di intenti prive di evidenza d'uso" sopra. Quando i dati quantitativi riportati sono obiettivi dichiarati dal finanziatore al momento della selezione — non ancora risultati misurati sul campo — questo è segnalato esplicitamente nel dataset (campo interno `Criticita_documentate`, e nel knowledge graph pubblico nel campo `KPI_tipo` quando applicabile) invece di essere presentato come un risultato osservato.
 
 La ricerca non si è fermata al 389° caso: un ciclo automatico ricorrente (vedi `protocollo_ricerca_settimanale.md`) continua a cercare nuovi casi con lo stesso rigore, proponendoli in una coda di revisione prima di ogni inclusione nel corpus pubblicato.
 
