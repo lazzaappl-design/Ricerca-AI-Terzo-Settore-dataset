@@ -117,6 +117,7 @@ python3 riclassifica_funzione_organizzativa.py    # recupera i NON_CLASSIFICATO 
 python3 normalizza_corpus.py                      # 9 colonne derivate: stato, anni, confidenza, verificabilità, KPI
 python3 build_knowledge_layer.py                  # nodi e relazioni del knowledge graph
 python3 build_graph_export.py                     # graph_data.json + knowledge_graph.html
+python3 build_casi_export.py                      # casi.json (elenco piatto per catalogo e ricerca)
 python3 compute_observatory.py                    # observatory_data.json
 python3 build_observatory_export.py               # osservatorio_ai_terzo_settore.html dal template
 ```

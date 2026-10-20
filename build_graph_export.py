@@ -34,10 +34,17 @@ TEMPLATE_FILE = "knowledge_graph_template.html"
 HTML_OUT_FILE = "knowledge_graph.html"
 
 # Campi di testo libero SEMPRE esclusi dal nodo Implementazione (dati sensibili)
-IMPLEMENTAZIONE_EXCLUDE = {
-    "Problema", "Obiettivo", "Sottoprocesso", "Workflow_dettagliato",
-    "Input", "Output", "Ruolo_umano", "Osservazioni", "Fallimenti",
-}
+# 2026-10-20: i nove campi di testo libero dell'Implementazione, prima esclusi
+# dall'export pubblico, sono ora pubblicati. Motivazione: sono descrizioni di
+# processo organizzativo ricavate da fonti gia' pubbliche, il cui soggetto sono le
+# organizzazioni e non le persone. Verifica svolta prima di aprirli: ricerca
+# automatica su tutti i 407 record di nomi di persona non riconducibili a entita'
+# note, marcatori di soggetto individuale e recapiti. Nessun individuo nominato:
+# le occorrenze trovate sono sostantivi generici di ruolo dentro descrizioni di
+# flusso ("la vittima contatta il servizio", "il paziente riceve un alert").
+# Senza questi campi il catalogo pubblico sarebbe un elenco bibliografico:
+# la descrizione di cosa fa il sistema e' il contenuto principale della ricerca.
+IMPLEMENTAZIONE_EXCLUDE = set()
 
 # File nodo -> (label da usare, se diverso dalla colonna 'label' nel CSV)
 NODE_FILES = [

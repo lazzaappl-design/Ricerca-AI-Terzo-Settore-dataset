@@ -151,3 +151,29 @@ Queste non sono decisioni da prendere, sono passaggi previsti dalle regole di la
 ---
 
 *Ultimo aggiornamento: 2026-09-16*
+
+---
+
+## PARTE 4 — Esecuzione della fase 0c e 0d (2026-09-16)
+
+Eseguite su autorizzazione esplicita di Alessandro ("inizia 0c e concludi tutte le istruzioni fino alla modifica di osservatorio, github e grafo").
+
+**Backup**: `_backup_fase0c_2026-09-16/` (corpus nei tre formati, database_casi.csv, script modificati, pagine generate, knowledge_layer completo).
+
+**Difetti strutturali trovati durante l'esecuzione, non previsti dalla diagnosi:**
+
+1. **Deriva fra regole e dati.** I tag salvati nel corpus provenivano da una versione più vecchia delle regole di `pbc_tagger.py`, incollata a mano: 38 record divergenti. Risolto creando `applica_tag_al_corpus.py`, che elimina il passaggio manuale.
+2. **Script non idempotente.** `normalizza_corpus.py` rieseguito portava le colonne da 66 a 75, duplicando le colonne derivate senza errori visibili. Corretto e verificato.
+3. **Relazioni duplicate.** `HA_SEDE_IN` veniva emessa una volta per implementazione invece che una per organizzazione: 15 relazioni duplicate, preesistenti, che gonfiavano ogni conteggio basato sulla sede. Corretto in `build_knowledge_layer.py`; la quota statunitense per sede è passata da 62,2% a 61,3% ed è stata corretta anche nella pagina.
+4. **Esclusione di sicurezza disattivata dal rinomino.** Il `.gitignore` escludeva il corpus per nome esplicito. Dopo il rinomino deciso in D1a, `corpus_working_407rec_2026-09-16.*` non era più escluso e sarebbe finito nel repository pubblico al primo commit, insieme alle cartelle di backup che contengono copie di `database_casi.csv` e dei nodi del knowledge_layer. Convertito a pattern (`corpus_working_*`, `corpus_freeze_*`, `database_casi.*`, `_backup_*/`). Verificato che il corpus non è mai stato committato in passato.
+
+**Conseguenza sulla funzione organizzativa.** Ripristinata la riproducibilità, 9 casi sono tornati NON_CLASSIFICATO perché la loro classificazione precedente non è derivabile da nessuna regola documentata: 45 → 54 (13,3%). Il numero peggiore è l'unico ricostruibile. I 9 casi sono il campione proposto per la revisione manuale prevista dalla fase 0c:
+TS-AI-00072, TS-AI-00257, TS-AI-00315, TS-AI-00321, TS-AI-00322, TS-AI-00329, TS-AI-00404, TS-AI-00412, TS-AI-00413.
+
+**Stato finale verificato dei non classificati**: beneficio documentato 64/407 (15,7%), funzione organizzativa 54/407 (13,3%), criticità 47/407 (11,5%), settore missione e supervisione umana 1/407 (0,2%), tecnica IA, fornitore e tipo beneficiario 0.
+
+**Controlli di coerenza 0d**: tutti superati (407 casi allineati fra corpus, knowledge layer e grafo; nessun arco orfano; nessun nodo o relazione duplicata; json allineato al csv; pagina priva delle vecchie formulazioni e contenente i numeri verificati).
+
+**Pubblicazione**: commit `3e27f20` creato in locale. Il push non è stato possibile perché la shell non dispone delle credenziali GitHub: va eseguito da Alessandro con `git push origin main`.
+
+**Non ancora fatto**: revisione manuale dei casi a campione; congelamento di una versione datata per la pubblicazione; meta tag Open Graph (voce E, fase 2b).
